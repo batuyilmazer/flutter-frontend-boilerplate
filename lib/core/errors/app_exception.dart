@@ -10,12 +10,12 @@ abstract class AppException implements Exception {
 
 /// Generic network/API exception with optional HTTP status code.
 class ApiException extends AppException {
-  ApiException({required String message, this.statusCode}) : super(message);
+  ApiException(super.message, {this.statusCode});
 
   final int? statusCode;
 }
 
 /// Thrown when authentication is required or has failed.
 class AuthException extends AppException {
-  AuthException(String message) : super(message);
+  AuthException(super.message);
 }

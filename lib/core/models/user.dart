@@ -18,17 +18,13 @@ class User with _$User {
         json['id']; // TODO: change when backend is fixed (unifying responses:userId and id)
     if (rawId == null) {
       // ID hiç yoksa anlamlı bir hata fırlat
-      throw ApiException(
-        message: 'User.fromJson: "id" or "userId" field is missing',
-      );
+      throw ApiException('User.fromJson: "id" or "userId" field is missing');
     }
 
     // Email alanını güvenli şekilde çek
     final dynamic rawEmail = json['email'];
     if (rawEmail == null || rawEmail is! String || rawEmail.isEmpty) {
-      throw ApiException(
-        message: 'User.fromJson: "email" field is missing or invalid',
-      );
+      throw ApiException('User.fromJson: "email" field is missing or invalid');
     }
 
     return User(id: rawId.toString(), email: rawEmail);

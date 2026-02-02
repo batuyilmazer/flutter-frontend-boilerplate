@@ -9,7 +9,7 @@ import '../../features/auth/data/auth_repository.dart';
 /// 3. Retries the original request with new token if refresh succeeds
 class AuthInterceptor {
   AuthInterceptor({required AuthRepository authRepository})
-      : _authRepository = authRepository;
+    : _authRepository = authRepository;
 
   final AuthRepository _authRepository;
 
@@ -44,10 +44,9 @@ class AuthInterceptor {
     } catch (e) {
       // Refresh failed - user needs to login again
       throw ApiException(
+        'Session expired. Please login again.',
         statusCode: 401,
-        message: 'Session expired. Please login again.',
       );
     }
   }
 }
-

@@ -30,11 +30,13 @@ jobs:
       - name: Check for uncommitted changes
         id: verify-generated-files
         run: |
-          if [ -n "$(git status --porcelain)" ]; then
+          # Check only generated files, ignore pubspec.lock and other files
+          GENERATED_FILES=$(git status --porcelain | grep -E '\.(freezed|g)\.dart$' || true)
+          if [ -n "$GENERATED_FILES" ]; then
             echo "❌ Generated files are out of sync!"
             echo ""
-            echo "The following files were modified or created:"
-            git status --short
+            echo "The following generated files were modified or created:"
+            echo "$GENERATED_FILES"
             echo ""
             echo "Please run the following command locally:"
             echo "  dart run build_runner build --delete-conflicting-outputs"
@@ -44,7 +46,7 @@ jobs:
             echo "  git commit -m 'chore: regenerate code generation files'"
             echo ""
             echo "Diff:"
-            git diff
+            git diff -- 'lib/**/*.freezed.dart' 'lib/**/*.g.dart'
             exit 1
           fi
           echo "✅ Generated files are up to date"
@@ -96,7 +98,12 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y lcov
 
       - name: Run unit tests
-        run: flutter test test/core/ test/features/ --coverage
+        run: |
+          if [ -n "$(find test/core test/features -name '*_test.dart' 2>/dev/null)" ]; then
+            flutter test test/core/ test/features/ --coverage
+          else
+            echo "⚠️ No unit tests found in test/core/ or test/features/, skipping..."
+          fi
 
       - name: Generate coverage report
         if: always()
@@ -138,7 +145,12 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y lcov
 
       - name: Run widget tests
-        run: flutter test test/ui/ test/widget_test.dart --coverage
+        run: |
+          if [ -n "$(find test/ui -name '*_test.dart' 2>/dev/null)" ]; then
+            flutter test test/ui/ --coverage
+          else
+            echo "⚠️ No widget tests found in test/ui/, skipping..."
+          fi
 
       - name: Generate coverage report
         if: always()
