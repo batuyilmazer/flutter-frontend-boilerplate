@@ -43,3 +43,19 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+#.DS_Store (MacOS)
+.DS_Store
+**/.DS_Store
+
+# IDE related
+.cursor/
+.vscode/
+.idea/
+.eclipse/
+.metadata/
+.project/
+.settings/
+.classpath/
+.factorypath/
+.gradle/
