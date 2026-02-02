@@ -116,7 +116,7 @@ class AuthApi {
   /// Logout from all devices.
   ///
   /// POST /auth/logout-all
-  /// Headers: Authorization: Bearer <accessToken>
+  /// Headers: Authorization: Bearer `accessToken`
   /// Returns: {msg: string}
   Future<void> logoutAll(String accessToken) async {
     await _client.postJson(
@@ -128,7 +128,7 @@ class AuthApi {
   /// Get current user info.
   ///
   /// GET /me
-  /// Headers: Authorization: Bearer <accessToken>
+  /// Headers: Authorization: Bearer `accessToken`
   /// Returns: {user: User, sessions: [...]}
   /// Note: Backend returns user and sessions, but we only extract user for now
   Future<User> getMe(String accessToken) async {
@@ -143,7 +143,7 @@ class AuthApi {
   /// Send 2FA verification email.
   ///
   /// POST /auth/2fa
-  /// Headers: Authorization: Bearer <accessToken>
+  /// Headers: Authorization: Bearer `accessToken`
   /// Body: {scope: "reset-password" | "verify-email"}
   /// Returns: {msg: string}
   Future<void> sendTwoFa({
@@ -160,7 +160,7 @@ class AuthApi {
   /// Verify email address using 2FA token.
   ///
   /// POST /auth/verify-email
-  /// Headers: Authorization: Bearer <accessToken>, X-2FA-Token: <token>
+  /// Headers: Authorization: Bearer `accessToken`, X-2FA-Token: `token`
   /// Returns: {msg: string}
   Future<void> verifyEmail({
     required String accessToken,
@@ -178,7 +178,7 @@ class AuthApi {
   /// Reset password using 2FA token.
   ///
   /// POST /auth/reset-password
-  /// Headers: Authorization: Bearer <accessToken>, X-2FA-Token: <token>
+  /// Headers: Authorization: Bearer `accessToken`, X-2FA-Token: `token`
   /// Body: {newPassword: string}
   /// Returns: {msg: string}
   Future<void> resetPassword({
