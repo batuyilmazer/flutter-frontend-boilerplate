@@ -3,8 +3,8 @@ import 'package:provider/provider.dart';
 import 'features/auth/presentation/auth_notifier.dart';
 import 'routing/app_router.dart';
 import 'theme/theme_notifier.dart';
-import 'theme/theme_builder.dart';
 import 'theme/theme_data.dart';
+import 'theme/extensions/theme_data_extensions.dart';
 
 void main() {
   runApp(const MyApp());
@@ -25,8 +25,8 @@ class MyApp extends StatelessWidget {
           final router = AppRouter.createRouter(context);
           return MaterialApp.router(
             title: 'Flutter Frontend Boilerplate',
-            theme: ThemeBuilder.buildThemeData(AppThemeData.light()),
-            darkTheme: ThemeBuilder.buildThemeData(AppThemeData.dark()),
+            theme: AppThemeData.light().toThemeData(),
+            darkTheme: AppThemeData.dark().toThemeData(),
             themeMode: themeNotifier.themeMode,
             routerConfig: router,
             debugShowCheckedModeBanner: false,
