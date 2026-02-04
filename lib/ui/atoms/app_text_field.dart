@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../../theme/app_theme.dart';
+import '../../theme/extensions/theme_context_extensions.dart';
 
 /// Reusable text field component that uses app theme tokens.
 ///
@@ -48,6 +48,11 @@ class AppTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.appColors;
+    final typography = context.appTypography;
+    final radius = context.appRadius;
+    final spacing = context.appSpacing;
+
     return TextFormField(
       controller: controller,
       obscureText: obscureText,
@@ -61,51 +66,51 @@ class AppTextField extends StatelessWidget {
       maxLength: maxLength,
       inputFormatters: inputFormatters,
       autofocus: autofocus,
-      style: AppTypography.body.copyWith(color: AppColors.textPrimary),
+      style: typography.body.copyWith(color: colors.textPrimary),
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
         prefixIcon: prefixIcon,
         suffixIcon: suffixIcon,
         errorText: errorText,
-        labelStyle: AppTypography.bodySmall.copyWith(
-          color: AppColors.textSecondary,
+        labelStyle: typography.bodySmall.copyWith(
+          color: colors.textSecondary,
         ),
-        hintStyle: AppTypography.bodySmall.copyWith(
-          color: AppColors.textSecondary,
+        hintStyle: typography.bodySmall.copyWith(
+          color: colors.textSecondary,
         ),
-        errorStyle: AppTypography.caption.copyWith(
-          color: AppColors.error,
+        errorStyle: typography.caption.copyWith(
+          color: colors.error,
         ),
         filled: true,
-        fillColor: enabled ? AppColors.surface : AppColors.background,
+        fillColor: enabled ? colors.surface : colors.background,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppRadius.medium),
-          borderSide: const BorderSide(color: AppColors.textSecondary),
+          borderRadius: BorderRadius.circular(radius.medium),
+          borderSide: BorderSide(color: colors.textSecondary),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppRadius.medium),
-          borderSide: const BorderSide(color: AppColors.textSecondary),
+          borderRadius: BorderRadius.circular(radius.medium),
+          borderSide: BorderSide(color: colors.textSecondary),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppRadius.medium),
-          borderSide: const BorderSide(color: AppColors.primary, width: 2),
+          borderRadius: BorderRadius.circular(radius.medium),
+          borderSide: BorderSide(color: colors.primary, width: 2),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppRadius.medium),
-          borderSide: const BorderSide(color: AppColors.error),
+          borderRadius: BorderRadius.circular(radius.medium),
+          borderSide: BorderSide(color: colors.error),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppRadius.medium),
-          borderSide: const BorderSide(color: AppColors.error, width: 2),
+          borderRadius: BorderRadius.circular(radius.medium),
+          borderSide: BorderSide(color: colors.error, width: 2),
         ),
         disabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppRadius.medium),
-          borderSide: const BorderSide(color: AppColors.textSecondary),
+          borderRadius: BorderRadius.circular(radius.medium),
+          borderSide: BorderSide(color: colors.textSecondary),
         ),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.s16,
-          vertical: AppSpacing.s12,
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: spacing.s16,
+          vertical: spacing.s12,
         ),
       ),
     );

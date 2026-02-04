@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ main, develop, master ]
+    branches: ['**']  # Run on all branches
   pull_request:
-    branches: [ main, develop, master ]
+    branches: ['**']  # Run on PRs to all branches
 
 jobs:
   verify-code-generation:
@@ -99,10 +99,10 @@ jobs:
 
       - name: Run unit tests
         run: |
-          if [ -n "$(find test/core test/features -name '*_test.dart' 2>/dev/null)" ]; then
-            flutter test test/core/ test/features/ --coverage
+          if [ -n "$(find test/core test/features test/theme -name '*_test.dart' 2>/dev/null)" ]; then
+            flutter test test/core/ test/features/ test/theme/ --coverage --reporter expanded
           else
-            echo "⚠️ No unit tests found in test/core/ or test/features/, skipping..."
+            echo "⚠️ No unit tests found in test/core/, test/features/, or test/theme/, skipping..."
           fi
 
       - name: Generate coverage report

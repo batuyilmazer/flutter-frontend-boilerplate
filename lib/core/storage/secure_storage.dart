@@ -10,7 +10,7 @@ abstract class SecureStorage {
   Future<void> delete(String key);
 }
 
-/// Keys used to persist auth/session data.
+/// Keys used to persist auth/session data and app preferences.
 class SecureStorageKeys {
   const SecureStorageKeys._();
 
@@ -18,6 +18,5 @@ class SecureStorageKeys {
   static const refreshToken = 'refresh_token';
   static const deviceId = 'device_id';
   static const user = 'user_json';
+  static const themeMode = 'theme_mode';
 }
-
-

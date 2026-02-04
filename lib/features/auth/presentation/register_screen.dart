@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../../ui/atoms/app_text.dart';
 import '../../../ui/organisms/auth_form.dart';
-import '../../../theme/app_theme.dart';
+import '../../../theme/extensions/theme_context_extensions.dart';
 import 'auth_notifier.dart';
 import 'auth_state.dart';
 import '../../../../routing/app_router.dart';
@@ -24,6 +24,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final spacing = context.appSpacing;
+    final colors = context.appColors;
+
     return Scaffold(
       appBar: AppBar(
         title: const AppText.title('Create Account'),
@@ -56,17 +59,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
             }
 
             return SingleChildScrollView(
-              padding: const EdgeInsets.all(AppSpacing.s24),
+              padding: EdgeInsets.all(spacing.s24),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const SizedBox(height: AppSpacing.s16),
+                  SizedBox(height: spacing.s16),
                   AppText.bodySmall(
                     'Create a new account to get started',
                     textAlign: TextAlign.center,
-                    color: AppColors.textSecondary,
+                    color: colors.textSecondary,
                   ),
-                  const SizedBox(height: AppSpacing.s32),
+                  SizedBox(height: spacing.s32),
                   // Register form
                   AuthForm(
                     onSubmit: (email, password) async {
@@ -92,26 +95,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     emailError: _emailError,
                     passwordError: _passwordError,
                   ),
-                  const SizedBox(height: AppSpacing.s24),
+                  SizedBox(height: spacing.s24),
                   // Terms and conditions
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.s16,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: spacing.s16,
                     ),
                     child: AppText.caption(
                       'By signing up, you agree to our Terms of Service and Privacy Policy',
                       textAlign: TextAlign.center,
-                      color: AppColors.textSecondary,
+                      color: colors.textSecondary,
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.s24),
+                  SizedBox(height: spacing.s24),
                   // Login link
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       AppText.bodySmall(
                         'Already have an account? ',
-                        color: AppColors.textSecondary,
+                        color: colors.textSecondary,
                       ),
                       TextButton(
                         onPressed: () {
@@ -119,7 +122,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         },
                         child: AppText.bodySmall(
                           'Sign In',
-                          color: AppColors.primary,
+                          color: colors.primary,
                         ),
                       ),
                     ],
@@ -144,10 +147,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   void _showErrorSnackBar(BuildContext context, String message) {
+    final colors = context.appColors;
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: AppText.bodySmall(message),
-        backgroundColor: AppColors.error,
+        backgroundColor: colors.error,
         behavior: SnackBarBehavior.floating,
       ),
     );

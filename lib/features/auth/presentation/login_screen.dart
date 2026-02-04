@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../../ui/atoms/app_text.dart';
 import '../../../ui/organisms/auth_form.dart';
-import '../../../theme/app_theme.dart';
+import '../../../theme/extensions/theme_context_extensions.dart';
 import 'auth_notifier.dart';
 import 'auth_state.dart';
 import '../../../../routing/app_router.dart';
@@ -24,6 +24,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final spacing = context.appSpacing;
+    final colors = context.appColors;
+
     return Scaffold(
       body: SafeArea(
         child: Consumer<AuthNotifier>(
@@ -49,25 +52,25 @@ class _LoginScreenState extends State<LoginScreen> {
             }
 
             return SingleChildScrollView(
-              padding: const EdgeInsets.all(AppSpacing.s24),
+              padding: EdgeInsets.all(spacing.s24),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const SizedBox(height: AppSpacing.s32),
+                  SizedBox(height: spacing.s32),
                   // Logo or app name placeholder
                   AppText.headline(
                     'Welcome Back',
                     textAlign: TextAlign.center,
-                    color: AppColors.textPrimary,
+                    color: colors.textPrimary,
                   ),
-                  const SizedBox(height: AppSpacing.s8),
+                  SizedBox(height: spacing.s8),
                   AppText.bodySmall(
                     'Sign in to continue',
                     textAlign: TextAlign.center,
-                    color: AppColors.textSecondary,
+                    color: colors.textSecondary,
                   ),
-                  const SizedBox(height: AppSpacing.s32),
-                  const SizedBox(height: AppSpacing.s16),
+                  SizedBox(height: spacing.s32),
+                  SizedBox(height: spacing.s16),
                   // Login form
                   AuthForm(
                     onSubmit: (email, password) async {
@@ -93,14 +96,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     emailError: _emailError,
                     passwordError: _passwordError,
                   ),
-                  const SizedBox(height: AppSpacing.s24),
+                  SizedBox(height: spacing.s24),
                   // Register link
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       AppText.bodySmall(
                         "Don't have an account? ",
-                        color: AppColors.textSecondary,
+                        color: colors.textSecondary,
                       ),
                       TextButton(
                         onPressed: () {
@@ -108,12 +111,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         },
                         child: AppText.bodySmall(
                           'Sign Up',
-                          color: AppColors.primary,
+                          color: colors.primary,
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: AppSpacing.s16),
+                  SizedBox(height: spacing.s16),
                   // Forgot password link
                   TextButton(
                     onPressed: () {
@@ -122,7 +125,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                     child: AppText.caption(
                       'Forgot Password?',
-                      color: AppColors.textSecondary,
+                      color: colors.textSecondary,
                     ),
                   ),
                 ],
@@ -145,20 +148,24 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _showErrorSnackBar(BuildContext context, String message) {
+    final colors = context.appColors;
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: AppText.bodySmall(message),
-        backgroundColor: AppColors.error,
+        backgroundColor: colors.error,
         behavior: SnackBarBehavior.floating,
       ),
     );
   }
 
   void _showInfoSnackBar(BuildContext context, String message) {
+    final colors = context.appColors;
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: AppText.bodySmall(message),
-        backgroundColor: AppColors.textSecondary,
+        backgroundColor: colors.textSecondary,
         behavior: SnackBarBehavior.floating,
       ),
     );

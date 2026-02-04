@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../atoms/app_button.dart';
 import '../molecules/labeled_text_field.dart';
-import '../../theme/app_theme.dart';
+import '../../theme/extensions/theme_context_extensions.dart';
 
 /// Form state for auth screens (login/register).
 class AuthFormState {
@@ -112,6 +112,8 @@ class _AuthFormState extends State<AuthForm> {
 
   @override
   Widget build(BuildContext context) {
+    final spacing = context.appSpacing;
+
     return Form(
       key: _formKey,
       child: Column(
@@ -128,7 +130,7 @@ class _AuthFormState extends State<AuthForm> {
             isRequired: true,
             prefixIcon: const Icon(Icons.email_outlined),
           ),
-          const SizedBox(height: AppSpacing.s16),
+          SizedBox(height: spacing.s16),
           LabeledTextField(
             label: widget.passwordLabel,
             controller: _passwordController,
@@ -151,7 +153,7 @@ class _AuthFormState extends State<AuthForm> {
             ),
             onSubmitted: (_) => _handleSubmit(),
           ),
-          const SizedBox(height: AppSpacing.s24),
+          SizedBox(height: spacing.s24),
           AppButton(
             label: widget.submitLabel,
             onPressed: widget.isLoading ? null : _handleSubmit,
