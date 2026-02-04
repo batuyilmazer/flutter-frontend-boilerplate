@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../theme/app_theme.dart';
+import '../../theme/extensions/theme_context_extensions.dart';
 
 /// Icon size variants for consistent sizing.
 enum AppIconSize {
@@ -34,7 +34,7 @@ class AppIcon extends StatelessWidget {
     return Icon(
       icon,
       size: size.size,
-      color: color ?? AppColors.textPrimary,
+      color: color ?? context.appColors.textPrimary,
       semanticLabel: semanticLabel,
     );
   }

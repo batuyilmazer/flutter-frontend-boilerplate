@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../theme/app_theme.dart';
+import '../../theme/extensions/theme_context_extensions.dart';
 
 /// Button variants for different use cases.
-enum AppButtonVariant {
-  primary,
-  secondary,
-  outline,
-  text,
-}
+enum AppButtonVariant { primary, secondary, outline, text }
 
 /// Reusable button component that uses app theme tokens.
 ///
@@ -41,6 +36,10 @@ class AppButton extends StatelessWidget {
   }
 
   Widget _buildButton(BuildContext context) {
+    final colors = context.appColors;
+    final radius = context.appRadius;
+    final spacing = context.appSpacing;
+
     if (isLoading) {
       return _buildLoadingButton(context);
     }
@@ -50,14 +49,14 @@ class AppButton extends StatelessWidget {
         return ElevatedButton(
           onPressed: onPressed,
           style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.primary,
+            backgroundColor: colors.primary,
             foregroundColor: Colors.white,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppRadius.medium),
+              borderRadius: BorderRadius.circular(radius.medium),
             ),
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.s24,
-              vertical: AppSpacing.s12,
+            padding: EdgeInsets.symmetric(
+              horizontal: spacing.s24,
+              vertical: spacing.s12,
             ),
           ),
           child: _buildContent(),
@@ -66,15 +65,15 @@ class AppButton extends StatelessWidget {
         return ElevatedButton(
           onPressed: onPressed,
           style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.surface,
-            foregroundColor: AppColors.primary,
+            backgroundColor: colors.surface,
+            foregroundColor: colors.primary,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppRadius.medium),
-              side: const BorderSide(color: AppColors.primary),
+              borderRadius: BorderRadius.circular(radius.medium),
+              side: BorderSide(color: colors.primary),
             ),
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.s24,
-              vertical: AppSpacing.s12,
+            padding: EdgeInsets.symmetric(
+              horizontal: spacing.s24,
+              vertical: spacing.s12,
             ),
           ),
           child: _buildContent(),
@@ -83,14 +82,14 @@ class AppButton extends StatelessWidget {
         return OutlinedButton(
           onPressed: onPressed,
           style: OutlinedButton.styleFrom(
-            foregroundColor: AppColors.textPrimary,
-            side: const BorderSide(color: AppColors.textSecondary),
+            foregroundColor: colors.textPrimary,
+            side: BorderSide(color: colors.textSecondary),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppRadius.medium),
+              borderRadius: BorderRadius.circular(radius.medium),
             ),
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.s24,
-              vertical: AppSpacing.s12,
+            padding: EdgeInsets.symmetric(
+              horizontal: spacing.s24,
+              vertical: spacing.s12,
             ),
           ),
           child: _buildContent(),
@@ -99,10 +98,10 @@ class AppButton extends StatelessWidget {
         return TextButton(
           onPressed: onPressed,
           style: TextButton.styleFrom(
-            foregroundColor: AppColors.primary,
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.s16,
-              vertical: AppSpacing.s8,
+            foregroundColor: colors.primary,
+            padding: EdgeInsets.symmetric(
+              horizontal: spacing.s16,
+              vertical: spacing.s8,
             ),
           ),
           child: _buildContent(),
@@ -111,32 +110,42 @@ class AppButton extends StatelessWidget {
   }
 
   Widget _buildContent() {
+    // Typography is only needed for Text widgets; pull it lazily via context
     if (icon != null) {
       return Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           icon!,
-          const SizedBox(width: AppSpacing.s8),
-          Text(label, style: AppTypography.button),
+          const SizedBox(width: 8),
+          Builder(
+            builder: (context) =>
+                Text(label, style: context.appTypography.button),
+          ),
         ],
       );
     }
-    return Text(label, style: AppTypography.button);
+    return Builder(
+      builder: (context) => Text(label, style: context.appTypography.button),
+    );
   }
 
   Widget _buildLoadingButton(BuildContext context) {
+    final colors = context.appColors;
+    final radius = context.appRadius;
+    final spacing = context.appSpacing;
+
     return ElevatedButton(
       onPressed: null,
       style: ElevatedButton.styleFrom(
         backgroundColor: variant == AppButtonVariant.primary
-            ? AppColors.primary
-            : AppColors.surface,
+            ? colors.primary
+            : colors.surface,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppRadius.medium),
+          borderRadius: BorderRadius.circular(radius.medium),
         ),
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.s24,
-          vertical: AppSpacing.s12,
+        padding: EdgeInsets.symmetric(
+          horizontal: spacing.s24,
+          vertical: spacing.s12,
         ),
       ),
       child: SizedBox(
@@ -145,13 +154,10 @@ class AppButton extends StatelessWidget {
         child: CircularProgressIndicator(
           strokeWidth: 2,
           valueColor: AlwaysStoppedAnimation<Color>(
-            variant == AppButtonVariant.primary
-                ? Colors.white
-                : AppColors.primary,
+            variant == AppButtonVariant.primary ? Colors.white : colors.primary,
           ),
         ),
       ),
     );
   }
 }
-

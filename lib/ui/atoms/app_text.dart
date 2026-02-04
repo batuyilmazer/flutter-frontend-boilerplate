@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../theme/app_theme.dart';
+import '../../theme/extensions/theme_context_extensions.dart';
 
 /// Reusable text component that uses app typography tokens.
 ///
@@ -14,7 +14,7 @@ class AppText extends StatelessWidget {
     this.maxLines,
     this.textAlign,
     this.overflow,
-  });
+  }) : _variant = _AppTextVariant.custom;
 
   final String text;
   final TextStyle? style;
@@ -22,6 +22,7 @@ class AppText extends StatelessWidget {
   final int? maxLines;
   final TextAlign? textAlign;
   final TextOverflow? overflow;
+  final _AppTextVariant _variant;
 
   /// Headline style - large, bold text for titles
   const AppText.headline(
@@ -31,7 +32,8 @@ class AppText extends StatelessWidget {
     this.maxLines,
     this.textAlign,
     this.overflow,
-  }) : style = AppTypography.headline;
+  }) : style = null,
+       _variant = _AppTextVariant.headline;
 
   /// Title style - medium, semi-bold text
   const AppText.title(
@@ -41,7 +43,8 @@ class AppText extends StatelessWidget {
     this.maxLines,
     this.textAlign,
     this.overflow,
-  }) : style = AppTypography.title;
+  }) : style = null,
+       _variant = _AppTextVariant.title;
 
   /// Body style - regular text
   const AppText.body(
@@ -51,7 +54,8 @@ class AppText extends StatelessWidget {
     this.maxLines,
     this.textAlign,
     this.overflow,
-  }) : style = AppTypography.body;
+  }) : style = null,
+       _variant = _AppTextVariant.body;
 
   /// Small body style
   const AppText.bodySmall(
@@ -61,7 +65,8 @@ class AppText extends StatelessWidget {
     this.maxLines,
     this.textAlign,
     this.overflow,
-  }) : style = AppTypography.bodySmall;
+  }) : style = null,
+       _variant = _AppTextVariant.bodySmall;
 
   /// Caption style - small, subtle text
   const AppText.caption(
@@ -71,13 +76,38 @@ class AppText extends StatelessWidget {
     this.maxLines,
     this.textAlign,
     this.overflow,
-  }) : style = AppTypography.caption;
+  }) : style = null,
+       _variant = _AppTextVariant.caption;
 
   @override
   Widget build(BuildContext context) {
+    final typography = context.appTypography;
+
+    TextStyle baseStyle;
+    switch (_variant) {
+      case _AppTextVariant.headline:
+        baseStyle = typography.headline;
+        break;
+      case _AppTextVariant.title:
+        baseStyle = typography.title;
+        break;
+      case _AppTextVariant.body:
+        baseStyle = typography.body;
+        break;
+      case _AppTextVariant.bodySmall:
+        baseStyle = typography.bodySmall;
+        break;
+      case _AppTextVariant.caption:
+        baseStyle = typography.caption;
+        break;
+      case _AppTextVariant.custom:
+        baseStyle = style ?? typography.body;
+        break;
+    }
+
     return Text(
       text,
-      style: (style ?? AppTypography.body).copyWith(color: color),
+      style: baseStyle.copyWith(color: color),
       maxLines: maxLines,
       textAlign: textAlign,
       overflow: overflow,
@@ -85,3 +115,5 @@ class AppText extends StatelessWidget {
   }
 }
 
+/// Internal variants for [AppText] to map to typography tokens.
+enum _AppTextVariant { custom, headline, title, body, bodySmall, caption }

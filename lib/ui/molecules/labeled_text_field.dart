@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../atoms/app_text.dart';
 import '../atoms/app_text_field.dart';
-import '../../theme/app_theme.dart';
+import '../../theme/extensions/theme_context_extensions.dart';
 
 /// A text field with a label above it.
 ///
@@ -52,6 +52,9 @@ class LabeledTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.appColors;
+    final spacing = context.appSpacing;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -59,16 +62,16 @@ class LabeledTextField extends StatelessWidget {
           children: [
             AppText.bodySmall(
               label,
-              color: AppColors.textPrimary,
+              color: colors.textPrimary,
             ),
             if (isRequired)
               AppText.bodySmall(
                 ' *',
-                color: AppColors.error,
+                color: colors.error,
               ),
           ],
         ),
-        const SizedBox(height: AppSpacing.s8),
+        SizedBox(height: spacing.s8),
         AppTextField(
           controller: controller,
           hint: hint,

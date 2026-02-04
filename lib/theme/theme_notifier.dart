@@ -12,12 +12,13 @@ import 'theme_data.dart';
 class ThemeNotifier extends ChangeNotifier {
   ThemeNotifier({SecureStorage? storage})
     : _storage = storage ?? SecureStorageImpl(),
-      _themeMode = ThemeMode.light {
-    _loadThemePreference();
+      _themeMode = ThemeMode.dark {
+    _initializationFuture = _loadThemePreference();
   }
 
   final SecureStorage _storage;
   ThemeMode _themeMode;
+  Future<void>? _initializationFuture;
 
   /// Current theme mode (light, dark, or system).
   ThemeMode get themeMode => _themeMode;
@@ -59,6 +60,16 @@ class ThemeNotifier extends ChangeNotifier {
         ? ThemeMode.dark
         : ThemeMode.light;
     await setThemeMode(newMode);
+  }
+
+  /// Ensures that theme preference loading from storage is complete.
+  ///
+  /// This is useful in tests or when you need to guarantee that the initial
+  /// theme preference has been loaded before accessing themeMode.
+  /// In normal app usage, this is not necessary as the UI will update
+  /// automatically when the preference is loaded.
+  Future<void> ensureInitialized() async {
+    await _initializationFuture;
   }
 
   /// Load theme preference from storage.

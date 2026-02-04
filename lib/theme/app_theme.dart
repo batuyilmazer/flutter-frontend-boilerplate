@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'theme_data.dart';
+import 'extensions/theme_data_extensions.dart';
 
 /// Central place to configure the app's themes and design tokens.
 ///
@@ -9,45 +11,16 @@ class AppTheme {
 
   /// Light theme configuration for the app.
   static ThemeData get light {
-    final colorScheme = ColorScheme.fromSeed(
-      seedColor: AppColors.primary,
-      brightness: Brightness.light,
-    );
-
-    return ThemeData(
-      colorScheme: colorScheme,
-      useMaterial3: true,
-      scaffoldBackgroundColor: AppColors.background,
-      appBarTheme: const AppBarTheme(
-        elevation: 0,
-        centerTitle: true,
-      ),
-      inputDecorationTheme: InputDecorationTheme(
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppRadius.medium),
-        ),
-      ),
-      textButtonTheme: TextButtonThemeData(
-        style: TextButton.styleFrom(
-          foregroundColor: AppColors.primary,
-          textStyle: AppTypography.button,
-        ),
-      ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppRadius.medium),
-          ),
-          textStyle: AppTypography.button,
-        ),
-      ),
-    );
+    // Legacy entry point kept for backward compatibility.
+    // New code should prefer AppThemeData.light().toThemeData().
+    return AppThemeData.light().toThemeData();
   }
 }
 
 /// Basic color tokens for the boilerplate.
 ///
 /// Customize these to change the visual identity of the app.
+@Deprecated('Use AppThemeData + context extensions (context.appColors) instead')
 class AppColors {
   AppColors._();
   static const primary = Color(0xFF4F46E5);
@@ -60,6 +33,7 @@ class AppColors {
 }
 
 /// Basic radius tokens for consistent corner rounding.
+@Deprecated('Use AppThemeData + context extensions (context.appRadius) instead')
 class AppRadius {
   AppRadius._();
   static const double small = 4;
@@ -68,6 +42,9 @@ class AppRadius {
 }
 
 /// Basic spacing tokens for consistent padding/margins.
+@Deprecated(
+  'Use AppThemeData + context extensions (context.appSpacing) instead',
+)
 class AppSpacing {
   AppSpacing._();
   static const double s4 = 4;
@@ -79,6 +56,9 @@ class AppSpacing {
 }
 
 /// Basic typography tokens for the boilerplate.
+@Deprecated(
+  'Use AppThemeData + context extensions (context.appTypography) instead',
+)
 class AppTypography {
   AppTypography._();
   static const TextStyle headline = TextStyle(
@@ -112,6 +92,3 @@ class AppTypography {
     letterSpacing: 0.2,
   );
 }
-
-
-

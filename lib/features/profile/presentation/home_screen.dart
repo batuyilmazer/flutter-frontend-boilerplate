@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../ui/atoms/app_button.dart';
 import '../../../ui/atoms/app_text.dart';
-import '../../../theme/app_theme.dart';
+import '../../../theme/extensions/theme_context_extensions.dart';
 import '../../auth/presentation/auth_providers.dart';
 
 /// Home screen shown after successful authentication.
@@ -28,15 +28,15 @@ class HomeScreen extends StatelessWidget {
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.s24),
+          padding: EdgeInsets.all(context.appSpacing.s24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AppText.headline('Welcome!'),
-              const SizedBox(height: AppSpacing.s8),
+              SizedBox(height: context.appSpacing.s8),
               if (user != null)
                 AppText.body('Email: ${user.email}'),
-              const SizedBox(height: AppSpacing.s32),
+              SizedBox(height: context.appSpacing.s32),
               AppButton(
                 label: 'Logout',
                 onPressed: () async {
@@ -45,7 +45,7 @@ class HomeScreen extends StatelessWidget {
                 variant: AppButtonVariant.outline,
                 isFullWidth: true,
               ),
-              const SizedBox(height: AppSpacing.s16),
+              SizedBox(height: context.appSpacing.s16),
               AppButton(
                 label: 'Logout All Devices',
                 onPressed: () async {
