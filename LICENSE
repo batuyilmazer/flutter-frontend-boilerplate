@@ -1,0 +1,138 @@
+NON-COMMERCIAL SOFTWARE LICENSE
+
+Copyright (c) 2026 Batuhan Yılmazer
+
+Permission is hereby granted, free of charge, to any person or entity obtaining
+a copy of this software and associated documentation files (the "Software"), to
+deal in the Software for NON-COMMERCIAL PURPOSES ONLY, subject to the following
+conditions:
+
+1. NON-COMMERCIAL USE GRANT
+
+   The above copyright notice and this permission notice shall be included in
+   all copies or substantial portions of the Software when used for
+   non-commercial purposes. Non-commercial purposes include, but are not limited
+   to:
+   - Personal projects and learning
+   - Educational use
+   - Open source projects that are themselves non-commercial
+   - Research and development for non-commercial purposes
+
+2. ATTRIBUTION REQUIREMENT
+
+   Redistributions of source code must retain the above copyright notice, this
+   list of conditions, and the following attribution:
+   
+   "This software is based on the Flutter Modular Boilerplate Template
+   (https://github.com/batuyilmazer/flutter-frontend-boilerplate) by Batuhan Yılmazer."
+   
+   Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions, and the attribution requirement in the
+   documentation and/or other materials provided with the distribution.
+
+3. MODIFICATION AND DERIVATIVE WORKS
+
+   You may modify the Software and create derivative works based on the
+   Software, provided that:
+   a) Such modifications and derivative works are used solely for
+      non-commercial purposes;
+   b) All modifications and derivative works retain the original copyright
+      notice and attribution requirements;
+   c) You clearly indicate what changes you have made to the original
+      Software.
+
+4. FORKING AND PULL REQUESTS
+
+   You may fork this repository and submit pull requests for improvements,
+   bug fixes, or enhancements. By submitting a pull request, you grant the
+   copyright holder a perpetual, worldwide, non-exclusive, royalty-free license
+   to use, modify, and distribute your contributions under the same license
+   terms as this Software.
+
+5. COMMERCIAL USE PROHIBITION
+
+   COMMERCIAL USE OF THIS SOFTWARE IS STRICTLY PROHIBITED WITHOUT PRIOR
+   WRITTEN PERMISSION FROM THE COPYRIGHT HOLDER.
+
+   For the purposes of this license, "Commercial Use" means any use of the
+   Software that is intended for or results in:
+   - Commercial advantage or monetary compensation
+   - Revenue generation, whether direct or indirect
+   - Client work or services provided to third parties for payment
+   - Paid products or services
+   - Software as a Service (SaaS) offerings
+   - Internal company tools or applications used in a commercial enterprise
+   - Any use by a for-profit organization or entity
+   - Incorporation into products or services that are sold, licensed, or
+     otherwise monetized
+
+   Companies, organizations, and individuals seeking to use this Software for
+   commercial purposes must contact the copyright holder at batu@duck.com
+   to obtain explicit written permission. Such permission may be granted at
+   the sole discretion of the copyright holder and may be subject to
+   additional terms and conditions, including but not limited to licensing
+   fees.
+
+6. REDISTRIBUTION
+
+   You may redistribute the Software in source or binary form, provided that:
+   a) Redistribution is for non-commercial purposes only;
+   b) All copyright notices, attribution requirements, and this license are
+      included in all copies;
+   c) The Software is not modified in a way that removes or obscures the
+      copyright notice or attribution requirements;
+   d) Redistribution does not constitute commercial use as defined in
+      Section 5.
+
+7. WARRANTY DISCLAIMER
+
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+   FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+   IN THE SOFTWARE.
+
+8. LIMITATION OF LIABILITY
+
+   IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY
+   DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+   (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+   LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+   ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+   THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+9. TERMINATION
+
+   This license and the rights granted hereunder will terminate automatically
+   if you fail to comply with any term or condition of this license. Upon
+   termination, you must immediately cease all use of the Software and destroy
+   all copies in your possession or control.
+
+10. GOVERNING LAW
+
+    This license shall be governed by and construed in accordance with the
+    laws of Republic of Türkiye, without regard to its conflict of law provisions.
+    Any disputes arising under or in connection with this license shall be
+    subject to the exclusive jurisdiction of the courts of Republic of Türkiye.
+
+11. SEVERABILITY
+
+    If any provision of this license is held to be invalid or unenforceable,
+    the remaining provisions shall remain in full force and effect.
+
+12. ENTIRE AGREEMENT
+
+    This license constitutes the entire agreement between you and the copyright
+    holder regarding the use of the Software and supersedes all prior
+    agreements and understandings, whether written or oral, relating to the
+    subject matter hereof.
+
+For commercial licensing inquiries, please contact:
+Batuhan Yılmazer
+batu@duck.com
+https://github.com/batuyilmazer
+
+END OF LICENSE
