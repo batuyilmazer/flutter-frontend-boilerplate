@@ -8,381 +8,171 @@ This project is a starting point for a Flutter application with:
 
 - **Clean Architecture**: Feature-based folder structure with separation of concerns
 - **Authentication**: Complete auth flow with JWT tokens, refresh tokens, and session management
-- **State Management**: Provider pattern with ChangeNotifier
-- **Routing**: GoRouter with authentication guards
-- **UI Components**: Atomic design pattern with reusable components
+- **State Management**: Provider pattern with ChangeNotifier (AuthNotifier, ThemeNotifier)
+- **Routing**: GoRouter with auth guards; optional shell layout (bottom nav) — see [docs/Routing.md](docs/Routing.md)
+- **Theme**: Design tokens, light/dark mode, ThemeNotifier — see [docs/ThemeProvider.md](docs/ThemeProvider.md)
+- **UI Components**: Atomic design (atoms, molecules, organisms) and reusable layout (e.g. MainShell)
 - **Network Layer**: HTTP client with automatic token injection and refresh
 - **Secure Storage**: Encrypted storage for sensitive data
 
 ### Prerequisites
 
-- Flutter SDK (latest stable version)
-- Dart SDK
-- Backend API running (default: `http://localhost:3000`)
+- Flutter SDK (latest stable)
+- Dart SDK 3.9+
+- Backend API (default: `http://localhost:3000`)
 
 ### Installation
 
-1. Clone the repository
+1. Clone the repository.
 2. Install dependencies:
    ```bash
    flutter pub get
    ```
-3. Update API base URL in `lib/core/config/app_config.dart` if needed
+3. Set the API base URL in `lib/core/config/app_config.dart` if needed.
 4. Run the app:
    ```bash
    flutter run
    ```
 
-## Project Structure: `/lib/` Directory
-
-The `/lib/` directory follows a clean architecture pattern with feature-based organization. Here's a detailed breakdown:
+## Project Structure: `lib/`
 
 ```
 lib/
-├── main.dart                 # Application entry point
-├── core/                    # Core functionality shared across features
-├── features/                 # Feature modules (auth, profile, etc.)
-├── routing/                  # Navigation and routing configuration
-├── theme/                    # App-wide theme and design tokens
-└── ui/                       # Reusable UI components (atomic design)
+├── main.dart                    # Entry point; Provider, router, theme
+├── core/                        # Shared infrastructure
+│   ├── config/                  # App config (e.g. API base URL)
+│   ├── errors/                  # AppException, ApiException, AuthException
+│   ├── models/                  # User, Session (Freezed)
+│   ├── network/                 # ApiClient, AuthInterceptor
+│   └── storage/                 # SecureStorage (tokens, user)
+├── features/                    # Feature modules
+│   ├── auth/                    # Login, register, AuthNotifier, AuthRepository
+│   └── profile/                 # Home screen (protected)
+├── routing/                     # GoRouter setup and route definitions
+│   ├── app_router.dart          # createRouter, RoutingMode (plain / shell)
+│   ├── route_paths.dart         # Central path constants (AppRoutes)
+│   ├── guards/                  # AuthGuard (redirect logic)
+│   └── builders/                # AuthRoutes, ProfileRoutes, ShellRoutes
+├── theme/                       # Theme data, notifier, design tokens
+│   ├── theme_data.dart          # AppThemeData (Freezed), light/dark
+│   ├── theme_notifier.dart      # Theme mode state (Provider)
+│   ├── theme_builder.dart       # AppThemeData → ThemeData
+│   └── *_schemes/               # Color, typography, spacing, radius
+└── ui/                          # Reusable UI
+    ├── atoms/                   # AppText, AppButton, AppTextField, AppIcon
+    ├── molecules/               # LabeledTextField
+    ├── organisms/               # AuthForm
+    └── layout/                  # MainShell (shell routing layout)
 ```
 
 ---
 
-## 📁 Core (`/lib/core/`)
+## Core (`lib/core/`)
 
-Core functionality that is shared across all features. This layer contains infrastructure code that doesn't depend on business logic.
+Shared infrastructure used by features.
 
-### Configuration (`core/config/`)
-
-**`app_config.dart`**
-- Central configuration for the application
-- Contains API base URL (`http://localhost:3000` by default)
-- Can be extended with environment-specific configurations (dev, staging, prod)
-- **Usage**: Use `AppConfig.apiBaseUrl` for all API calls
-
-### Errors (`core/errors/`)
-
-**`app_exception.dart`**
-- Base exception class hierarchy for the application
-- **`AppException`**: Abstract base class for all app exceptions
-- **`ApiException`**: Network/API errors with optional HTTP status code
-- **`AuthException`**: Authentication-related errors
-- **Usage**: Throw these exceptions in repositories and handle them in UI
-
-### Models (`core/models/`)
-
-**`user.dart`**
-- User domain model
-- Properties: `id`, `email`
-- JSON serialization support (`fromJson`, `toJson`)
-- Handles both `id` and `userId` field names from API responses
-
-**`session.dart`**
-- Session model for refresh token management
-- Properties: `refreshToken`, `deviceId`, `expiresAt`
-- Used for multi-device session management
-
-### Network (`core/network/`)
-
-**`api_client.dart`**
-- HTTP client wrapper around `package:http`
-- Provides `getJson()` and `postJson()` methods
-- Automatic JSON encoding/decoding
-- Error handling with `ApiException`
-- Supports optional `AuthInterceptor` for token management
-- Handles 401 responses with automatic token refresh retry
-
-**`auth_interceptor.dart`**
-- Interceptor for automatic token injection and refresh
-- **Request Interception**: Automatically adds `Authorization: Bearer <token>` header
-- **Response Interception**: Handles 401 errors by attempting token refresh
-- Retries original request with new token if refresh succeeds
-- **Usage**: Pass to `ApiClient` constructor for automatic auth handling
-
-### Storage (`core/storage/`)
-
-**`secure_storage.dart`**
-- Abstract interface for secure storage operations
-- Methods: `write()`, `read()`, `delete()`
-- Defines `SecureStorageKeys` for auth data keys:
-  - `accessToken`, `refreshToken`, `deviceId`, `user`
-
-**`secure_storage_impl.dart`**
-- Concrete implementation using `flutter_secure_storage`
-- Platform-specific secure storage (Keychain on iOS, KeyStore on Android)
-- Convenience methods for auth data:
-  - `saveAccessToken()`, `getAccessToken()`
-  - `saveRefreshToken()`, `getRefreshToken()`
-  - `saveDeviceId()`, `getDeviceId()`
-  - `saveUser()`, `getUser()`
-  - `clearAuthData()`, `hasAuthData()`
+- **config**: `AppConfig.apiBaseUrl` for the backend.
+- **errors**: `AppException`, `ApiException`, `AuthException` for consistent error handling.
+- **models**: `User`, `Session` (Freezed + JSON).
+- **network**: `ApiClient` (getJson/postJson), `AuthInterceptor` (token injection, 401 refresh).
+- **storage**: `SecureStorage` / `SecureStorageImpl` (flutter_secure_storage) for tokens and user.
 
 ---
 
-## 🎯 Features (`/lib/features/`)
+## Features (`lib/features/`)
 
-Feature modules organized by domain. Each feature follows a layered architecture:
+### Auth (`features/auth/`)
 
-```
-feature_name/
-├── data/           # Data layer (API clients, repositories)
-└── presentation/   # Presentation layer (screens, state management)
-```
+- **data**: `AuthApi` (login, register, refresh, logout, getMe, …), `AuthRepository` (session restore, token persistence).
+- **presentation**: `AuthNotifier` (ChangeNotifier), `AuthState` (sealed), `LoginScreen`, `RegisterScreen`; uses `AuthForm` organism.
 
-### Authentication Feature (`features/auth/`)
+### Profile (`features/profile/`)
 
-Complete authentication system with login, registration, and session management.
-
-#### Data Layer (`features/auth/data/`)
-
-**`auth_api.dart`**
-- Low-level API client for authentication endpoints
-- Methods:
-  - `register()` - POST `/auth/register`
-  - `login()` - POST `/auth/login`
-  - `refresh()` - POST `/auth/refresh`
-  - `logout()` - POST `/auth/logout`
-  - `logoutAll()` - POST `/auth/logout-all`
-  - `getMe()` - GET `/me`
-  - `sendTwoFa()` - POST `/auth/2fa`
-  - `verifyEmail()` - POST `/auth/verify-email`
-  - `resetPassword()` - POST `/auth/reset-password`
-- Returns typed response models (`AuthResponse`, `RefreshResponse`)
-
-**`auth_repository.dart`**
-- High-level repository for authentication operations
-- Orchestrates `AuthApi` calls and `SecureStorage` operations
-- Handles token persistence, auto-login, and session management
-- Methods:
-  - `register()` - Register new user and save tokens
-  - `login()` - Login and save tokens
-  - `refreshAccessToken()` - Refresh expired access token
-  - `logout()` - Logout current session
-  - `logoutAll()` - Logout from all devices
-  - `getCurrentUser()` - Get user from storage
-  - `restoreSession()` - Restore session from storage (auto-login)
-  - `sendTwoFa()`, `verifyEmail()`, `resetPassword()` - 2FA operations
-
-#### Presentation Layer (`features/auth/presentation/`)
-
-**`auth_state.dart`**
-- Sealed class hierarchy for authentication state
-- States:
-  - `UnauthenticatedState` - User is logged out
-  - `AuthenticatedState(user)` - User is logged in
-  - `AuthLoadingState` - Auth operation in progress
-  - `AuthErrorState(message)` - Auth operation failed
-
-**`auth_notifier.dart`**
-- State management for authentication using `ChangeNotifier`
-- Provides reactive auth state to the entire app
-- Methods:
-  - `register()` - Register new user
-  - `login()` - Login with credentials
-  - `logout()` - Logout current session
-  - `logoutAll()` - Logout from all devices
-  - `refreshUser()` - Refresh user info from backend
-  - `clearError()` - Clear error state
-- Properties:
-  - `state` - Current auth state
-  - `currentUser` - Current user if authenticated
-  - `isAuthenticated` - Boolean auth status
-  - `isLoading` - Loading status
-
-**`auth_providers.dart`**
-- Provider definitions for dependency injection (if using Riverpod/Provider)
-
-**`login_screen.dart`**
-- Login screen UI
-- Uses `AuthForm` component
-- Connects to `AuthNotifier` for login logic
-
-**`register_screen.dart`**
-- Registration screen UI
-- Uses `AuthForm` component
-- Connects to `AuthNotifier` for registration logic
-
-### Profile Feature (`features/profile/`)
-
-**`presentation/home_screen.dart`**
-- Home screen for authenticated users
-- Example protected route
+- **presentation**: `HomeScreen` (protected post-login screen).
 
 ---
 
-## 🧭 Routing (`/lib/routing/`)
+## Routing (`lib/routing/`)
 
-**`app_router.dart`**
-- GoRouter configuration with authentication guards
-- **Route Definitions**:
-  - `/login` - Login screen
-  - `/register` - Registration screen
-  - `/` (home) - Home screen (protected)
-- **Authentication Guards**:
-  - Unauthenticated users → redirected to `/login`
-  - Authenticated users → redirected to `/` when accessing auth routes
-  - Loading state → no redirect (waits for auth check)
-- **Usage**: Call `AppRouter.createRouter(context)` in `main.dart`
+GoRouter is configured in `AppRouter.createRouter(context, { RoutingMode mode = RoutingMode.plain })`. Auth routes (login, register) are always present; authenticated area uses either **plain** feature routes (`ProfileRoutes`) or **shell** routes (`ShellRoutes` with `MainShell` and optional bottom nav).
+
+- **Paths**: All paths are in `route_paths.dart` (`AppRoutes`).
+- **Guard**: `AuthGuard` redirects unauthenticated users to login and authenticated users away from auth pages.
+- **Builders**: `AuthRoutes`, `ProfileRoutes`, `ShellRoutes` (used when `mode == RoutingMode.shell`).
+
+**Detaylı mimari, yeni route/shell ekleme ve mod seçimi için [docs/Routing.md](docs/Routing.md) dosyasına bakın.**
 
 ---
 
-## 🎨 Theme (`/lib/theme/`)
+## Theme (`lib/theme/`)
 
-**`app_theme.dart`**
-- Central theme configuration
-- **`AppTheme`**: Main theme class with `light` theme
-- **`AppColors`**: Color tokens:
-  - `primary`, `background`, `textPrimary`, `textSecondary`
-  - `error`, `success`, `surface`
-- **`AppRadius`**: Border radius tokens (`small`, `medium`, `large`)
-- **`AppSpacing`**: Spacing tokens (`s4`, `s8`, `s12`, `s16`, `s24`, `s32`)
-- **`AppTypography`**: Text style tokens:
-  - `headline`, `title`, `body`, `bodySmall`, `button`, `caption`
-- **Usage**: Access via `Theme.of(context)` or directly import tokens
+Tema, `AppThemeData` (Freezed) ve `ThemeNotifier` (Provider) ile yönetilir. `ThemeBuilder` ile `ThemeData` üretilir; renk, tipografi, spacing ve radius için scheme’ler kullanılır. Light/dark mod `ThemeNotifier.themeMode` ile değiştirilir.
+
+**Tema yapısı, kullanım ve genişletme için [docs/ThemeProvider.md](docs/ThemeProvider.md) dosyasına bakın.**
 
 ---
 
-## 🧩 UI Components (`/lib/ui/`)
+## UI Components (`lib/ui/`)
 
-UI components organized using atomic design principles.
-
-### Atoms (`ui/atoms/`)
-
-Smallest reusable components.
-
-**`app_text.dart`**
-- Text component with typography variants
-- Constructors: `AppText.headline()`, `AppText.title()`, `AppText.body()`, etc.
-- Supports custom color, maxLines, textAlign, overflow
-
-**`app_text_field.dart`**
-- Text input field with consistent styling
-- Supports validation, icons, different input types
-- Uses theme tokens for colors and spacing
-
-**`app_button.dart`**
-- Button component with variants:
-  - `primary` - Main action button
-  - `secondary` - Secondary action
-  - `outline` - Outlined button
-  - `text` - Text button
-- Supports loading state, icons, full-width option
-
-**`app_icon.dart`**
-- Icon component with size variants (`small`, `medium`, `large`, `xlarge`)
-- Consistent sizing and coloring
-
-### Molecules (`ui/molecules/`)
-
-Combinations of atoms.
-
-**`labeled_text_field.dart`**
-- Text field with label above it
-- Useful for forms with explicit labels
-- Supports all `AppTextField` features plus label and required indicator
-
-### Organisms (`ui/organisms/`)
-
-Complex components combining molecules and atoms.
-
-**`auth_form.dart`**
-- Complete authentication form
-- Includes email and password fields with validation
-- Password visibility toggle
-- Loading state support
-- Customizable labels and hints
-- **Usage**: Used in `LoginScreen` and `RegisterScreen`
+- **atoms**: `AppText`, `AppTextField`, `AppButton`, `AppIcon`.
+- **molecules**: `LabeledTextField`.
+- **organisms**: `AuthForm` (email/password, validation, loading).
+- **layout**: `MainShell` — shell layout (Scaffold + bottom nav); tab config via `ShellTabConfig`. Kullanımı [docs/Routing.md](docs/Routing.md) içinde anlatılır.
 
 ---
 
-## 📱 Main Entry Point (`main.dart`)
+## Main Entry Point (`main.dart`)
 
-**Application Setup**:
-1. Creates `AuthNotifier` with Provider
-2. Configures `AppRouter` with auth guards
-3. Applies `AppTheme.light` theme
-4. Uses `MaterialApp.router` for navigation
-
-**Key Dependencies**:
-- `provider` - State management
-- `go_router` - Navigation
-- `flutter_secure_storage` - Secure storage
-- `http` - HTTP client
+- `MultiProvider`: `AuthNotifier`, `ThemeNotifier`.
+- `Consumer<ThemeNotifier>`: theme mode’a göre `MaterialApp.router` theme/darkTheme.
+- Router: `AppRouter.createRouter(context)` (varsayılan plain mod; shell için `mode: RoutingMode.shell`).
+- Theme: `AppThemeData.light().toThemeData()` / `AppThemeData.dark().toThemeData()`.
 
 ---
 
-## 🔄 Data Flow
+## Data Flow
 
-### Authentication Flow
+### Authentication
 
-1. **User Action** (e.g., login) → `LoginScreen`
-2. **UI** → Calls `AuthNotifier.login()`
-3. **State Management** → `AuthNotifier` calls `AuthRepository.login()`
-4. **Repository** → Calls `AuthApi.login()` and saves tokens via `SecureStorage`
-5. **API** → Makes HTTP request via `ApiClient`
-6. **Interceptor** → Adds `Authorization` header automatically
-7. **Response** → Returns to repository, saves tokens, returns user
-8. **State Update** → `AuthNotifier` updates state, UI rebuilds
+1. UI → `AuthNotifier.login()` → `AuthRepository` → `AuthApi` + `SecureStorage`.
+2. `ApiClient` + `AuthInterceptor`: istekte token eklenir; 401’de refresh denenir ve istek tekrarlanır.
+3. Sonuç → repository → notifier → UI güncellenir.
 
-### Auto-Login Flow
+### Auto-login
 
-1. **App Start** → `AuthNotifier._initialize()`
-2. **Repository** → `AuthRepository.restoreSession()`
-3. **Storage** → Reads tokens from `SecureStorage`
-4. **Validation** → Calls `/me` endpoint to validate token
-5. **Refresh** → If token expired, attempts refresh
-6. **State** → Updates `AuthNotifier` state based on result
-
-### Token Refresh Flow
-
-1. **401 Response** → `ApiClient` detects 401 error
-2. **Interceptor** → `AuthInterceptor.interceptResponse()` called
-3. **Refresh** → `AuthRepository.refreshAccessToken()` called
-4. **Retry** → Original request retried with new token
-5. **Success** → Response returned to caller
+- Uygulama açılışında `AuthNotifier._initialize()` → `AuthRepository.restoreSession()` → storage’dan token/user; gerekirse `/me` veya refresh.
 
 ---
 
-## 🛠️ Customization Guide
+## Customization
 
-### Adding a New Feature
-
-1. Create feature folder: `lib/features/your_feature/`
-2. Add data layer: `data/your_feature_api.dart`, `data/your_feature_repository.dart`
-3. Add presentation layer: `presentation/your_feature_screen.dart`, `presentation/your_feature_notifier.dart`
-4. Add route in `app_router.dart`
-5. Use UI components from `lib/ui/` or create new ones
-
-### Customizing Theme
-
-Edit `lib/theme/app_theme.dart`:
-- Update `AppColors` for brand colors
-- Adjust `AppTypography` for font styles
-- Modify `AppRadius` and `AppSpacing` for spacing/radius values
-
-### Adding API Endpoints
-
-1. Add method to appropriate API class (e.g., `AuthApi`)
-2. Use `ApiClient.getJson()` or `ApiClient.postJson()`
-3. Create response models if needed
-4. Add repository method that calls API and handles storage if needed
+- **Yeni feature**: `lib/features/<feature>/` (data + presentation); route’ları [docs/Routing.md](docs/Routing.md) içindeki “Yeni Feature Ekleme” adımlarına göre ekleyin.
+- **Tema**: Renk, tipografi, spacing değişiklikleri için [docs/ThemeProvider.md](docs/ThemeProvider.md) ve `lib/theme/` içindeki scheme’lere bakın.
+- **API**: `AuthApi` veya yeni API sınıfları; `ApiClient.getJson` / `postJson`; gerekirse repository ve notifier ekleyin.
 
 ---
 
-## 📚 Additional Resources
+## Documentation
+
+| Konu | Dosya |
+|------|--------|
+| Routing (modüler yapı, guards, shell, yeni route/feature) | [docs/Routing.md](docs/Routing.md) |
+| Tema (ThemeNotifier, AppThemeData, token’lar, genişletme) | [docs/ThemeProvider.md](docs/ThemeProvider.md) |
+
+---
+
+## Additional Resources
 
 - [Flutter Documentation](https://docs.flutter.dev/)
-- [GoRouter Documentation](https://pub.dev/packages/go_router)
-- [Provider Documentation](https://pub.dev/packages/provider)
-- [Clean Architecture Guide](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
+- [GoRouter](https://pub.dev/packages/go_router)
+- [Provider](https://pub.dev/packages/provider)
+- [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
 
 ---
 
-## 📝 Notes
+## Notes
 
-- The backend API base URL is configured in `lib/core/config/app_config.dart`
-- Authentication tokens are stored securely using `flutter_secure_storage`
-- The app automatically handles token refresh on 401 errors
-- All UI components use theme tokens for consistent styling
-- Feature modules are self-contained and can be easily added/removed
+- API base URL: `lib/core/config/app_config.dart`.
+- Tokens: `flutter_secure_storage`; 401’de otomatik refresh.
+- Route path’leri yalnızca `AppRoutes` sabitleriyle kullanın; ayrıntılar [docs/Routing.md](docs/Routing.md).
+- Tema ve routing için detaylı açıklamalar `docs/` altındaki ilgili dosyalarda yer alır.
