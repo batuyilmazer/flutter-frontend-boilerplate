@@ -6,7 +6,7 @@ import '../../../ui/organisms/auth_form.dart';
 import '../../../theme/extensions/theme_context_extensions.dart';
 import 'auth_notifier.dart';
 import 'auth_state.dart';
-import '../../../../routing/app_router.dart';
+import '../../../routing/route_paths.dart';
 
 /// Login screen for user authentication.
 ///
