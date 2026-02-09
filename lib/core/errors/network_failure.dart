@@ -1,7 +1,7 @@
 import 'failure.dart';
 
 /// Base class for all network-related failures.
-sealed class NetworkFailure extends Failure {
+abstract class NetworkFailure extends Failure {
   const NetworkFailure({
     required super.message,
     super.code,

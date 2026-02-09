@@ -156,11 +156,6 @@ class AuthNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  void _setError(String message) {
-    _state = AuthErrorState(message);
-    notifyListeners();
-  }
-
   void _handleFailure(Failure failure) {
     final message = switch (failure) {
       SessionExpiredFailure _ =>

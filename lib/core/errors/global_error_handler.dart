@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/foundation.dart';
 
 /// Global error handler to capture uncaught Flutter and Dart errors.

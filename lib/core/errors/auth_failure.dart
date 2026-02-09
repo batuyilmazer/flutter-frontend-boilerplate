@@ -1,7 +1,7 @@
 import 'failure.dart';
 
 /// Base class for all authentication / authorization related failures.
-sealed class AuthFailure extends Failure {
+abstract class AuthFailure extends Failure {
   const AuthFailure({
     required super.message,
     super.code,

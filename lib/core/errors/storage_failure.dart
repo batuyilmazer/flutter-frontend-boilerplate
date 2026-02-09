@@ -1,7 +1,7 @@
 import 'failure.dart';
 
 /// Base class for all local storage related failures.
-sealed class StorageFailure extends Failure {
+abstract class StorageFailure extends Failure {
   const StorageFailure({
     required super.message,
     super.code,

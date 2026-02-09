@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../ui/atoms/app_text.dart';
 import '../../../ui/organisms/auth_form.dart';
 import '../../../theme/extensions/theme_context_extensions.dart';
+import '../../../core/errors/validation_failure.dart';
 import 'auth_notifier.dart';
 import 'auth_state.dart';
 import '../../../routing/route_paths.dart';

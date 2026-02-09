@@ -2,7 +2,10 @@
 ///
 /// This is a value-based representation of an error that can be safely passed
 /// between layers (repository → notifier → UI) without throwing exceptions.
-sealed class Failure {
+///
+/// Note: This is intentionally **not** sealed to allow related failure
+/// subclasses to live in separate files while still sharing the same base type.
+abstract class Failure {
   const Failure({
     required this.message,
     this.code,
