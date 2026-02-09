@@ -1,5 +1,5 @@
 import '../../../core/models/session.dart';
-import '../../../core/models/user.dart';
+import '../../../core/models/user/models.dart';
 import '../../../core/network/api_client.dart';
 
 /// Response model for register/login endpoints.

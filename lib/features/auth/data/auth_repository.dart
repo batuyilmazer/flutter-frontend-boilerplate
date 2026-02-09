@@ -1,5 +1,5 @@
-import '../../../core/errors/app_exception.dart';
-import '../../../core/models/user.dart';
+import '../../../core/errors/errors.dart';
+import '../../../core/models/user/models.dart';
 import '../../../core/storage/secure_storage_impl.dart';
 import 'auth_api.dart';
 
@@ -22,11 +22,11 @@ class AuthRepository {
   ///
   /// After successful registration, tokens and user info are automatically
   /// saved to secure storage.
-  Future<User> register({
+  Future<Result<User>> register({
     required String email,
     required String password,
   }) async {
-    try {
+    return _safeCall(() async {
       final response = await _authApi.register(
         email: email,
         password: password,
@@ -41,23 +41,18 @@ class AuthRepository {
       );
 
       return response.user;
-    } catch (e) {
-      if (e is ApiException) {
-        throw AuthException(e.message);
-      }
-      rethrow;
-    }
+    });
   }
 
   /// Login with email and password.
   ///
   /// If a deviceId exists in storage, it will be sent to revoke old tokens
   /// for that device. After successful login, tokens are saved to storage.
-  Future<User> login({
+  Future<Result<User>> login({
     required String email,
     required String password,
   }) async {
-    try {
+    return _safeCall(() async {
       // Get existing deviceId if available (to revoke old tokens)
       final existingDeviceId = await _storage.getDeviceId();
 
@@ -76,12 +71,7 @@ class AuthRepository {
       );
 
       return response.user;
-    } catch (e) {
-      if (e is ApiException) {
-        throw AuthException(e.message);
-      }
-      rethrow;
-    }
+    });
   }
 
   /// Refresh access token using stored refresh token.
@@ -288,6 +278,19 @@ class AuthRepository {
     await _storage.saveRefreshToken(refreshToken);
     await _storage.saveDeviceId(deviceId);
     await _storage.saveUser(user);
+  }
+
+  /// Wraps a repository operation and converts any thrown exceptions into a
+  /// [Failure]-based [Result].
+  Future<Result<T>> _safeCall<T>(Future<T> Function() action) async {
+    try {
+      final data = await action();
+      return success<T>(data);
+    } on ApiException catch (e) {
+      return fail<T>(ErrorMapper.mapApiException(e));
+    } catch (e) {
+      return fail<T>(ErrorMapper.mapException(e));
+    }
   }
 }
 

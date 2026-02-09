@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
-import '../../../core/errors/app_exception.dart';
-import '../../../core/models/user.dart';
+import '../../../core/errors/errors.dart';
+import '../../../core/models/user/models.dart';
 import '../data/auth_repository.dart';
 import 'auth_state.dart';
 
@@ -56,14 +56,19 @@ class AuthNotifier extends ChangeNotifier {
   }) async {
     _setLoading();
     try {
-      final user = await _authRepository.register(
+      final result = await _authRepository.register(
         email: email,
         password: password,
       );
-      _state = AuthenticatedState(user);
-      notifyListeners();
+      result.when(
+        success: (user) {
+          _state = AuthenticatedState(user);
+          notifyListeners();
+        },
+        failure: _handleFailure,
+      );
     } catch (e) {
-      _setError(_getErrorMessage(e));
+      _handleFailure(ErrorMapper.mapException(e));
     }
   }
 
@@ -74,14 +79,19 @@ class AuthNotifier extends ChangeNotifier {
   }) async {
     _setLoading();
     try {
-      final user = await _authRepository.login(
+      final result = await _authRepository.login(
         email: email,
         password: password,
       );
-      _state = AuthenticatedState(user);
-      notifyListeners();
+      result.when(
+        success: (user) {
+          _state = AuthenticatedState(user);
+          notifyListeners();
+        },
+        failure: _handleFailure,
+      );
     } catch (e) {
-      _setError(_getErrorMessage(e));
+      _handleFailure(ErrorMapper.mapException(e));
     }
   }
 
@@ -118,13 +128,14 @@ class AuthNotifier extends ChangeNotifier {
     if (!isAuthenticated) return;
 
     try {
-      final accessToken = await _authRepository.getAccessToken();
-      if (accessToken != null) {
-        final user = await _authRepository.getCurrentUser();
-        if (user != null) {
-          _state = AuthenticatedState(user);
-          notifyListeners();
-        }
+      // Reuse restoreSession logic to fetch fresh user data from /me
+      final user = await _authRepository.restoreSession();
+      if (user != null) {
+        _state = AuthenticatedState(user);
+        notifyListeners();
+      } else {
+        // Session could not be restored, treat as logged out
+        await logout();
       }
     } catch (e) {
       // If refresh fails, logout user
@@ -145,19 +156,19 @@ class AuthNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  void _setError(String message) {
-    _state = AuthErrorState(message);
+  void _handleFailure(Failure failure) {
+    final message = switch (failure) {
+      SessionExpiredFailure _ =>
+        'Session expired. Please login again.',
+      InvalidCredentialsFailure _ => failure.message,
+      ConnectionFailure _ =>
+        'No internet connection. Please check your network.',
+      TimeoutFailure _ =>
+        'Request timed out. Please try again.',
+      _ => failure.message,
+    };
+    _state = AuthErrorState(message, failure: failure);
     notifyListeners();
-  }
-
-  String _getErrorMessage(Object error) {
-    if (error is AuthException) {
-      return error.message;
-    }
-    if (error is ApiException) {
-      return error.message;
-    }
-    return 'An unexpected error occurred';
   }
 }
 

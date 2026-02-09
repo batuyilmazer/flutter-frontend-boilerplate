@@ -68,7 +68,6 @@ class ApiClient {
     try {
       response = await requestFn();
     } catch (e) {
-      // Re-throw non-HTTP errors
       rethrow;
     }
 

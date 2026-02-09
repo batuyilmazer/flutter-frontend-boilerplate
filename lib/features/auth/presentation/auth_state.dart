@@ -1,4 +1,5 @@
-import '../../../core/models/user.dart';
+import '../../../core/errors/failure.dart';
+import '../../../core/models/user/models.dart';
 
 /// Represents the current authentication state of the app.
 sealed class AuthState {
@@ -24,8 +25,9 @@ class AuthLoadingState extends AuthState {
 
 /// Authentication operation failed with an error.
 class AuthErrorState extends AuthState {
-  const AuthErrorState(this.message);
+  const AuthErrorState(this.message, {this.failure});
 
   final String message;
+  final Failure? failure;
 }
 
