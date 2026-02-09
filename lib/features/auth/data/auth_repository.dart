@@ -1,6 +1,7 @@
 import '../../../core/errors/errors.dart';
 import '../../../core/models/user/models.dart';
-import '../../../core/storage/secure_storage_impl.dart';
+import '../../../core/storage/session_storage.dart';
+import '../../../core/storage/session_storage_impl.dart';
 import 'auth_api.dart';
 
 /// High-level repository for authentication operations.
@@ -11,12 +12,12 @@ import 'auth_api.dart';
 class AuthRepository {
   AuthRepository({
     AuthApi? authApi,
-    SecureStorageImpl? storage,
+    SessionStorage? sessionStorage,
   })  : _authApi = authApi ?? AuthApi(),
-        _storage = storage ?? SecureStorageImpl();
+        _sessionStorage = sessionStorage ?? SecureSessionStorage();
 
   final AuthApi _authApi;
-  final SecureStorageImpl _storage;
+  final SessionStorage _sessionStorage;
 
   /// Register a new user.
   ///
@@ -54,7 +55,7 @@ class AuthRepository {
   }) async {
     return _safeCall(() async {
       // Get existing deviceId if available (to revoke old tokens)
-      final existingDeviceId = await _storage.getDeviceId();
+      final existingDeviceId = await _sessionStorage.getDeviceId();
 
       final response = await _authApi.login(
         email: email,
@@ -79,8 +80,8 @@ class AuthRepository {
   /// Automatically updates stored tokens on success.
   /// Throws [AuthException] if refresh fails (user should re-login).
   Future<String> refreshAccessToken() async {
-    final refreshToken = await _storage.getRefreshToken();
-    final deviceId = await _storage.getDeviceId();
+    final refreshToken = await _sessionStorage.getRefreshToken();
+    final deviceId = await _sessionStorage.getDeviceId();
 
     if (refreshToken == null || deviceId == null) {
       throw AuthException('No refresh token or device ID found');
@@ -92,14 +93,22 @@ class AuthRepository {
         deviceId: deviceId,
       );
 
-      // Update stored tokens
-      await _storage.saveAccessToken(response.accessToken);
-      await _storage.saveRefreshToken(response.newRefreshToken);
+      // Update stored tokens and keep or refresh user information.
+      final existingUser = await _sessionStorage.getUser();
+      final user =
+          existingUser ?? await _authApi.getMe(response.accessToken);
+
+      await _sessionStorage.saveSession(
+        accessToken: response.accessToken,
+        refreshToken: response.newRefreshToken,
+        deviceId: deviceId,
+        user: user,
+      );
 
       return response.accessToken;
     } catch (e) {
       // Refresh failed - clear auth data
-      await _storage.clearAuthData();
+      await _sessionStorage.clearSession();
       if (e is ApiException) {
         throw AuthException('Session expired. Please login again.');
       }
@@ -111,7 +120,7 @@ class AuthRepository {
   ///
   /// Revokes refresh token on backend and clears local storage.
   Future<void> logout() async {
-    final refreshToken = await _storage.getRefreshToken();
+    final refreshToken = await _sessionStorage.getRefreshToken();
     if (refreshToken != null) {
       try {
         await _authApi.logout(refreshToken);
@@ -120,7 +129,7 @@ class AuthRepository {
         // This ensures user can logout even if network is down
       }
     }
-    await _storage.clearAuthData();
+    await _sessionStorage.clearSession();
   }
 
   /// Logout from all devices.
@@ -128,7 +137,7 @@ class AuthRepository {
   /// Requires valid access token. Revokes all refresh tokens on backend
   /// and clears local storage.
   Future<void> logoutAll() async {
-    final accessToken = await _storage.getAccessToken();
+    final accessToken = await _sessionStorage.getAccessToken();
     if (accessToken != null) {
       try {
         await _authApi.logoutAll(accessToken);
@@ -136,28 +145,28 @@ class AuthRepository {
         // Even if backend call fails, clear local storage
       }
     }
-    await _storage.clearAuthData();
+    await _sessionStorage.clearSession();
   }
 
   /// Get current user from storage.
   ///
   /// Returns null if user is not logged in.
   Future<User?> getCurrentUser() async {
-    return await _storage.getUser();
+    return await _sessionStorage.getUser();
   }
 
   /// Get current access token from storage.
   ///
   /// Returns null if user is not logged in.
   Future<String?> getAccessToken() async {
-    return await _storage.getAccessToken();
+    return await _sessionStorage.getAccessToken();
   }
 
   /// Check if user is currently logged in.
   ///
   /// Checks for presence of access token and refresh token in storage.
   Future<bool> isLoggedIn() async {
-    return await _storage.hasAuthData();
+    return await _sessionStorage.hasSession();
   }
 
   /// Attempt to restore session from storage.
@@ -165,14 +174,14 @@ class AuthRepository {
   /// If tokens exist, validates them by calling /me endpoint.
   /// Returns user if session is valid, null otherwise.
   Future<User?> restoreSession() async {
-    final accessToken = await _storage.getAccessToken();
+    final accessToken = await _sessionStorage.getAccessToken();
     if (accessToken == null) return null;
 
     try {
       // Try to get user info to validate token
       final user = await _authApi.getMe(accessToken);
       // Update user info in storage (in case it changed)
-      await _storage.saveUser(user);
+      await _sessionStorage.saveUser(user);
       return user;
     } catch (e) {
       // Token might be expired, try refresh
@@ -180,16 +189,16 @@ class AuthRepository {
         try {
           final newAccessToken = await refreshAccessToken();
           final user = await _authApi.getMe(newAccessToken);
-          await _storage.saveUser(user);
+          await _sessionStorage.saveUser(user);
           return user;
         } catch (_) {
           // Refresh also failed, clear everything
-          await _storage.clearAuthData();
+          await _sessionStorage.clearSession();
           return null;
         }
       }
       // Other errors - clear storage to be safe
-      await _storage.clearAuthData();
+      await _sessionStorage.clearSession();
       return null;
     }
   }
@@ -198,7 +207,7 @@ class AuthRepository {
   ///
   /// Scope can be "reset-password" or "verify-email".
   Future<void> sendTwoFa({required String scope}) async {
-    final accessToken = await _storage.getAccessToken();
+    final accessToken = await _sessionStorage.getAccessToken();
     if (accessToken == null) {
       throw AuthException('Not authenticated');
     }
@@ -220,7 +229,7 @@ class AuthRepository {
   ///
   /// The 2FA token is typically received via email link.
   Future<void> verifyEmail({required String twoFaToken}) async {
-    final accessToken = await _storage.getAccessToken();
+    final accessToken = await _sessionStorage.getAccessToken();
     if (accessToken == null) {
       throw AuthException('Not authenticated');
     }
@@ -232,7 +241,7 @@ class AuthRepository {
       );
       // Refresh user info after verification
       final user = await _authApi.getMe(accessToken);
-      await _storage.saveUser(user);
+      await _sessionStorage.saveUser(user);
     } catch (e) {
       if (e is ApiException) {
         throw AuthException(e.message);
@@ -248,7 +257,7 @@ class AuthRepository {
     required String twoFaToken,
     required String newPassword,
   }) async {
-    final accessToken = await _storage.getAccessToken();
+    final accessToken = await _sessionStorage.getAccessToken();
     if (accessToken == null) {
       throw AuthException('Not authenticated');
     }
@@ -274,10 +283,12 @@ class AuthRepository {
     required String deviceId,
     required User user,
   }) async {
-    await _storage.saveAccessToken(accessToken);
-    await _storage.saveRefreshToken(refreshToken);
-    await _storage.saveDeviceId(deviceId);
-    await _storage.saveUser(user);
+    await _sessionStorage.saveSession(
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+      deviceId: deviceId,
+      user: user,
+    );
   }
 
   /// Wraps a repository operation and converts any thrown exceptions into a

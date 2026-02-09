@@ -83,7 +83,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                       // Check for field-level validation errors if present.
                       final state = authNotifier.state;
-                      if (state is AuthErrorState && state.failure is ValidationFailure) {
+                      if (state is AuthErrorState &&
+                          state.failure is ValidationFailure) {
                         final failure = state.failure as ValidationFailure;
                         _applyFieldErrors(failure);
                       } else if (state is AuthErrorState) {
@@ -103,9 +104,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   SizedBox(height: spacing.s24),
                   // Terms and conditions
                   Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: spacing.s16,
-                    ),
+                    padding: EdgeInsets.symmetric(horizontal: spacing.s16),
                     child: AppText.caption(
                       'By signing up, you agree to our Terms of Service and Privacy Policy',
                       textAlign: TextAlign.center,
@@ -177,4 +176,3 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 }
-

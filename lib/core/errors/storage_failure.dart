@@ -35,4 +35,3 @@ class StorageClearFailure extends StorageFailure {
     super.originalError,
   });
 }
-

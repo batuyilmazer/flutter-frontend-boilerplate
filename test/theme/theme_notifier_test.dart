@@ -1,41 +1,51 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_frontend_boilerplate/theme/theme_notifier.dart';
-import 'package:flutter_frontend_boilerplate/core/storage/secure_storage.dart';
+import 'package:flutter_frontend_boilerplate/core/storage/preferences_storage.dart';
 
-/// Mock implementation of SecureStorage for testing.
-class MockSecureStorage implements SecureStorage {
+/// Mock implementation of [PreferencesStorage] for testing.
+class MockPreferencesStorage implements PreferencesStorage {
   final Map<String, String> _storage = {};
 
   @override
-  Future<void> write(String key, String value) async {
+  Future<ThemeMode?> getThemeMode() async {
+    final saved = _storage['theme_mode'];
+    if (saved == null) return null;
+
+    return ThemeMode.values.firstWhere(
+      (e) => e.name == saved,
+      orElse: () => ThemeMode.light,
+    );
+  }
+
+  @override
+  Future<void> saveThemeMode(ThemeMode mode) async {
+    _storage['theme_mode'] = mode.name;
+  }
+
+  // Test helpers to inspect and prepare raw stored values.
+  Future<void> writeRaw(String key, String value) async {
     _storage[key] = value;
   }
 
-  @override
-  Future<String?> read(String key) async {
+  Future<String?> readRaw(String key) async {
     return _storage[key];
-  }
-
-  @override
-  Future<void> delete(String key) async {
-    _storage.remove(key);
   }
 }
 
 void main() {
   group('ThemeNotifier', () {
     test('has initial theme mode set', () {
-      final mockStorage = MockSecureStorage();
-      final notifier = ThemeNotifier(storage: mockStorage);
+      final mockStorage = MockPreferencesStorage();
+      final notifier = ThemeNotifier(preferencesStorage: mockStorage);
       // Test that a valid ThemeMode is set, regardless of which one
       expect(notifier.themeMode, isA<ThemeMode>());
       expect(ThemeMode.values, contains(notifier.themeMode));
     });
 
     test('currentThemeData returns correct theme for light mode', () async {
-      final mockStorage = MockSecureStorage();
-      final notifier = ThemeNotifier(storage: mockStorage);
+      final mockStorage = MockPreferencesStorage();
+      final notifier = ThemeNotifier(preferencesStorage: mockStorage);
 
       // Explicitly set to light mode to test light theme data
       await notifier.setThemeMode(ThemeMode.light);
@@ -46,8 +56,8 @@ void main() {
     });
 
     test('setThemeMode updates theme mode', () async {
-      final mockStorage = MockSecureStorage();
-      final notifier = ThemeNotifier(storage: mockStorage);
+      final mockStorage = MockPreferencesStorage();
+      final notifier = ThemeNotifier(preferencesStorage: mockStorage);
 
       // Test setting to dark mode
       await notifier.setThemeMode(ThemeMode.dark);
@@ -63,8 +73,8 @@ void main() {
     });
 
     test('setThemeMode persists to storage', () async {
-      final mockStorage = MockSecureStorage();
-      final notifier = ThemeNotifier(storage: mockStorage);
+      final mockStorage = MockPreferencesStorage();
+      final notifier = ThemeNotifier(preferencesStorage: mockStorage);
       final initialMode = notifier.themeMode;
 
       // Set to a different mode to ensure storage write happens
@@ -72,7 +82,7 @@ void main() {
           ? ThemeMode.light
           : ThemeMode.dark;
       await notifier.setThemeMode(testMode);
-      final saved = await mockStorage.read('theme_mode');
+      final saved = await mockStorage.readRaw('theme_mode');
       expect(saved, testMode.name);
 
       // Test setting to another mode
@@ -80,27 +90,27 @@ void main() {
           ? ThemeMode.light
           : ThemeMode.dark;
       await notifier.setThemeMode(otherMode);
-      final savedOther = await mockStorage.read('theme_mode');
+      final savedOther = await mockStorage.readRaw('theme_mode');
       expect(savedOther, otherMode.name);
     });
 
     test('setThemeMode does not update if mode is same', () async {
-      final mockStorage = MockSecureStorage();
-      final notifier = ThemeNotifier(storage: mockStorage);
+      final mockStorage = MockPreferencesStorage();
+      final notifier = ThemeNotifier(preferencesStorage: mockStorage);
       final initialMode = notifier.themeMode;
 
       await notifier.setThemeMode(initialMode);
-      final firstSave = await mockStorage.read('theme_mode');
+      final firstSave = await mockStorage.readRaw('theme_mode');
 
       await notifier.setThemeMode(initialMode);
-      final secondSave = await mockStorage.read('theme_mode');
+      final secondSave = await mockStorage.readRaw('theme_mode');
 
       expect(firstSave, secondSave);
     });
 
     test('toggleTheme switches between light and dark', () async {
-      final mockStorage = MockSecureStorage();
-      final notifier = ThemeNotifier(storage: mockStorage);
+      final mockStorage = MockPreferencesStorage();
+      final notifier = ThemeNotifier(preferencesStorage: mockStorage);
       final initialMode = notifier.themeMode;
       final expectedNextMode = initialMode == ThemeMode.light
           ? ThemeMode.dark
@@ -114,23 +124,23 @@ void main() {
     });
 
     test('toggleTheme persists to storage', () async {
-      final mockStorage = MockSecureStorage();
-      final notifier = ThemeNotifier(storage: mockStorage);
+      final mockStorage = MockPreferencesStorage();
+      final notifier = ThemeNotifier(preferencesStorage: mockStorage);
       final initialMode = notifier.themeMode;
       final expectedNextMode = initialMode == ThemeMode.light
           ? ThemeMode.dark
           : ThemeMode.light;
 
       await notifier.toggleTheme();
-      final saved = await mockStorage.read('theme_mode');
+      final saved = await mockStorage.readRaw('theme_mode');
       expect(saved, expectedNextMode.name);
     });
 
     test('loads theme preference from storage on initialization', () async {
-      final mockStorage = MockSecureStorage();
-      await mockStorage.write('theme_mode', 'dark');
+      final mockStorage = MockPreferencesStorage();
+      await mockStorage.writeRaw('theme_mode', 'dark');
 
-      final notifier = ThemeNotifier(storage: mockStorage);
+      final notifier = ThemeNotifier(preferencesStorage: mockStorage);
 
       // Wait for async initialization to complete
       await notifier.ensureInitialized();
@@ -139,8 +149,8 @@ void main() {
     });
 
     test('uses configured default theme if storage is empty', () async {
-      final mockStorage = MockSecureStorage();
-      final notifier = ThemeNotifier(storage: mockStorage);
+      final mockStorage = MockPreferencesStorage();
+      final notifier = ThemeNotifier(preferencesStorage: mockStorage);
 
       // Wait for async initialization to complete
       await notifier.ensureInitialized();
@@ -151,10 +161,10 @@ void main() {
     });
 
     test('defaults to configured theme if invalid value in storage', () async {
-      final mockStorage = MockSecureStorage();
-      await mockStorage.write('theme_mode', 'invalid_mode');
+      final mockStorage = MockPreferencesStorage();
+      await mockStorage.writeRaw('theme_mode', 'invalid_mode');
 
-      final notifier = ThemeNotifier(storage: mockStorage);
+      final notifier = ThemeNotifier(preferencesStorage: mockStorage);
 
       // Wait for async initialization to complete
       await notifier.ensureInitialized();
@@ -168,8 +178,8 @@ void main() {
     });
 
     test('currentThemeData returns dark theme for dark mode', () async {
-      final mockStorage = MockSecureStorage();
-      final notifier = ThemeNotifier(storage: mockStorage);
+      final mockStorage = MockPreferencesStorage();
+      final notifier = ThemeNotifier(preferencesStorage: mockStorage);
 
       await notifier.setThemeMode(ThemeMode.dark);
       final themeData = notifier.currentThemeData;
@@ -179,8 +189,8 @@ void main() {
     });
 
     test('currentThemeData returns light theme for system mode', () async {
-      final mockStorage = MockSecureStorage();
-      final notifier = ThemeNotifier(storage: mockStorage);
+      final mockStorage = MockPreferencesStorage();
+      final notifier = ThemeNotifier(preferencesStorage: mockStorage);
 
       // Set to system mode
       await notifier.setThemeMode(ThemeMode.system);

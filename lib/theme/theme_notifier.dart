@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import '../core/storage/secure_storage.dart';
-import '../core/storage/secure_storage_impl.dart';
+import 'package:flutter/material.dart';
+
+import '../core/storage/preferences_storage.dart';
+import '../core/storage/preferences_storage_impl.dart';
 import 'theme_data.dart';
 
 /// Notifier that manages theme state across the app.
@@ -10,13 +11,13 @@ import 'theme_data.dart';
 /// automatically persists theme preference to secure storage.
 /// Notifies listeners when theme state changes.
 class ThemeNotifier extends ChangeNotifier {
-  ThemeNotifier({SecureStorage? storage})
-    : _storage = storage ?? SecureStorageImpl(),
+  ThemeNotifier({PreferencesStorage? preferencesStorage})
+    : _preferencesStorage = preferencesStorage ?? SecurePreferencesStorage(),
       _themeMode = ThemeMode.dark {
     _initializationFuture = _loadThemePreference();
   }
 
-  final SecureStorage _storage;
+  final PreferencesStorage _preferencesStorage;
   ThemeMode _themeMode;
   Future<void>? _initializationFuture;
 
@@ -78,16 +79,10 @@ class ThemeNotifier extends ChangeNotifier {
   /// If no preference is found, defaults to light theme.
   Future<void> _loadThemePreference() async {
     try {
-      final saved = await _storage.read(SecureStorageKeys.themeMode);
-      if (saved != null) {
-        final mode = ThemeMode.values.firstWhere(
-          (e) => e.name == saved,
-          orElse: () => ThemeMode.light,
-        );
-        if (mode != _themeMode) {
-          _themeMode = mode;
-          notifyListeners();
-        }
+      final mode = await _preferencesStorage.getThemeMode();
+      if (mode != null && mode != _themeMode) {
+        _themeMode = mode;
+        notifyListeners();
       }
     } catch (e) {
       // If loading fails, keep default light theme
@@ -102,7 +97,7 @@ class ThemeNotifier extends ChangeNotifier {
   /// Called whenever theme mode changes to persist user preference.
   Future<void> _saveThemePreference() async {
     try {
-      await _storage.write(SecureStorageKeys.themeMode, _themeMode.name);
+      await _preferencesStorage.saveThemeMode(_themeMode);
     } catch (e) {
       // If saving fails, log error but don't fail the operation
       if (kDebugMode) {

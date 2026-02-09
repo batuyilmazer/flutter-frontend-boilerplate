@@ -10,8 +10,8 @@ import 'auth_state.dart';
 /// Notifies listeners when auth state changes.
 class AuthNotifier extends ChangeNotifier {
   AuthNotifier({AuthRepository? authRepository})
-      : _authRepository = authRepository ?? AuthRepository(),
-        _state = const AuthLoadingState() {
+    : _authRepository = authRepository ?? AuthRepository(),
+      _state = const AuthLoadingState() {
     _initialize();
   }
 
@@ -73,10 +73,7 @@ class AuthNotifier extends ChangeNotifier {
   }
 
   /// Login with email and password.
-  Future<void> login({
-    required String email,
-    required String password,
-  }) async {
+  Future<void> login({required String email, required String password}) async {
     _setLoading();
     try {
       final result = await _authRepository.login(
@@ -158,17 +155,14 @@ class AuthNotifier extends ChangeNotifier {
 
   void _handleFailure(Failure failure) {
     final message = switch (failure) {
-      SessionExpiredFailure _ =>
-        'Session expired. Please login again.',
+      SessionExpiredFailure _ => 'Session expired. Please login again.',
       InvalidCredentialsFailure _ => failure.message,
       ConnectionFailure _ =>
         'No internet connection. Please check your network.',
-      TimeoutFailure _ =>
-        'Request timed out. Please try again.',
+      TimeoutFailure _ => 'Request timed out. Please try again.',
       _ => failure.message,
     };
     _state = AuthErrorState(message, failure: failure);
     notifyListeners();
   }
 }
-

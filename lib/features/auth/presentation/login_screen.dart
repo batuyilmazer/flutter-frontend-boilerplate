@@ -84,7 +84,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
                       // Check for field-level validation errors if present.
                       final state = authNotifier.state;
-                      if (state is AuthErrorState && state.failure is ValidationFailure) {
+                      if (state is AuthErrorState &&
+                          state.failure is ValidationFailure) {
                         final failure = state.failure as ValidationFailure;
                         _applyFieldErrors(failure);
                       } else if (state is AuthErrorState) {
@@ -126,7 +127,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   TextButton(
                     onPressed: () {
                       // TODO: Navigate to forgot password screen
-                      _showInfoSnackBar(context, 'Forgot password feature coming soon');
+                      _showInfoSnackBar(
+                        context,
+                        'Forgot password feature coming soon',
+                      );
                     },
                     child: AppText.caption(
                       'Forgot Password?',
@@ -190,4 +194,3 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
-
