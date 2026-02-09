@@ -6,11 +6,7 @@
 /// Note: This is intentionally **not** sealed to allow related failure
 /// subclasses to live in separate files while still sharing the same base type.
 abstract class Failure {
-  const Failure({
-    required this.message,
-    this.code,
-    this.originalError,
-  });
+  const Failure({required this.message, this.code, this.originalError});
 
   /// Human-readable message that can be shown to the user (or transformed
   /// into a localized string by the presentation layer).
@@ -26,4 +22,3 @@ abstract class Failure {
   @override
   String toString() => '$runtimeType(message: $message, code: $code)';
 }
-

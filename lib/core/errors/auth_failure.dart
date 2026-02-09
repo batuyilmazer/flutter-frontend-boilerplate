@@ -2,11 +2,7 @@ import 'failure.dart';
 
 /// Base class for all authentication / authorization related failures.
 abstract class AuthFailure extends Failure {
-  const AuthFailure({
-    required super.message,
-    super.code,
-    super.originalError,
-  });
+  const AuthFailure({required super.message, super.code, super.originalError});
 }
 
 /// User provided invalid credentials (e.g. wrong email/password).
@@ -57,4 +53,3 @@ class RegistrationFailure extends AuthFailure {
   /// Optional field-specific error messages, e.g. {"email": "Already taken"}.
   final Map<String, String> fieldErrors;
 }
-

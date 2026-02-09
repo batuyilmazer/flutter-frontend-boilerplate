@@ -59,4 +59,3 @@ class UnknownNetworkFailure extends NetworkFailure {
     super.originalError,
   });
 }
-
