@@ -12,4 +12,5 @@ class AppRoutes {
 
   // Profile routes
   static const home = '/';
+  static const profile = '/profile';
 }

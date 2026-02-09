@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../../ui/atoms/app_button.dart';
 import '../../../ui/atoms/app_text.dart';
 import '../../../theme/extensions/theme_context_extensions.dart';
+import '../../../routing/route_paths.dart';
 import '../../auth/presentation/auth_providers.dart';
 
 /// Home screen shown after successful authentication.
@@ -36,7 +38,14 @@ class HomeScreen extends StatelessWidget {
               SizedBox(height: context.appSpacing.s8),
               if (user != null)
                 AppText.body('Email: ${user.email}'),
-              SizedBox(height: context.appSpacing.s32),
+              SizedBox(height: context.appSpacing.s16),
+              AppButton(
+                label: 'Profile',
+                onPressed: () => context.push(AppRoutes.profile),
+                variant: AppButtonVariant.primary,
+                isFullWidth: true,
+              ),
+              SizedBox(height: context.appSpacing.s16),
               AppButton(
                 label: 'Logout',
                 onPressed: () async {

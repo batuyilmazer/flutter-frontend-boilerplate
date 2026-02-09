@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/profile/presentation/home_screen.dart';
+import '../../features/profile/presentation/profile_screen.dart';
 import '../../ui/layout/main_shell.dart';
 import '../route_paths.dart';
 
@@ -25,6 +26,11 @@ class ShellRoutes {
           name: 'home',
           builder: (context, state) => const HomeScreen(),
         ),
+        GoRoute(
+          path: AppRoutes.profile,
+          name: 'profile',
+          builder: (context, state) => const ProfileScreen(),
+        ),
       ],
     ),
   ];
@@ -35,5 +41,6 @@ class ShellRoutes {
   /// replaced by template consumers to fit their navigation needs.
   static List<ShellTabConfig> _buildShellTabs() => const [
     ShellTabConfig(label: 'Home', icon: Icons.home, path: AppRoutes.home),
+    ShellTabConfig(label: 'Profile', icon: Icons.person, path: AppRoutes.profile),
   ];
 }

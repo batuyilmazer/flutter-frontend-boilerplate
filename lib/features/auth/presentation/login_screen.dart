@@ -80,11 +80,15 @@ class _LoginScreenState extends State<LoginScreen> {
                         email: email,
                         password: password,
                       );
-                      // Check for errors after login attempt
-                      if (authNotifier.state is AuthErrorState) {
-                        final errorState = authNotifier.state as AuthErrorState;
-                        // Parse error message to set field-specific errors
-                        _parseError(errorState.message);
+
+                      // Check for field-level validation errors if present.
+                      final state = authNotifier.state;
+                      if (state is AuthErrorState && state.failure is ValidationFailure) {
+                        final failure = state.failure as ValidationFailure;
+                        _applyFieldErrors(failure);
+                      } else if (state is AuthErrorState) {
+                        // Fallback to simple parsing for non-validation failures.
+                        _parseError(state.message);
                       }
                     },
                     submitLabel: 'Sign In',
@@ -144,6 +148,20 @@ class _LoginScreenState extends State<LoginScreen> {
     } else if (message.toLowerCase().contains('password')) {
       _passwordError = message;
     }
+    setState(() {});
+  }
+
+  void _applyFieldErrors(ValidationFailure failure) {
+    final emailErrors = failure.fieldErrors['email'];
+    final passwordErrors = failure.fieldErrors['password'];
+
+    _emailError = (emailErrors != null && emailErrors.isNotEmpty)
+        ? emailErrors.first
+        : null;
+    _passwordError = (passwordErrors != null && passwordErrors.isNotEmpty)
+        ? passwordErrors.first
+        : null;
+
     setState(() {});
   }
 

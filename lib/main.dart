@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'core/errors/global_error_handler.dart';
 import 'features/auth/presentation/auth_notifier.dart';
 import 'routing/app_router.dart';
 import 'theme/theme_notifier.dart';
@@ -7,6 +8,7 @@ import 'theme/theme_data.dart';
 import 'theme/extensions/theme_data_extensions.dart';
 
 void main() {
+  GlobalErrorHandler.init();
   runApp(const MyApp());
 }
 
