@@ -7,18 +7,73 @@ Production-ready Flutter application boilerplate with clean architecture, authen
 - **Clean architecture**: Feature-based folder structure with clear separation of concerns.
 - **Authentication**: Full auth flow with JWT, refresh tokens, session restore, and guards.
 - **State management**: Provider + `ChangeNotifier` (`AuthNotifier`, `ThemeNotifier`).
-- **Routing**: GoRouter with auth guards and optional shell layout — see [`docs/Routing.md`](docs/Routing.md).
-- **Theme system**: Design tokens, light/dark mode, ThemeNotifier — see [`docs/ThemeProvider.md`](docs/ThemeProvider.md).
-- **User & error model**: Typed user model and failure/exception pipeline — see [`docs/User.md`](docs/User.md) and [`docs/ErrorHandling.md`](docs/ErrorHandling.md).
-- **Storage layer**: Modular storage for session & preferences — see [`docs/Storage.md`](docs/Storage.md).
+- **Routing**: GoRouter with auth guards and optional shell layout.
+- **Theme system**: Design tokens (colors, typography, spacing, radius, sizes, shadows), light/dark mode, ThemeNotifier.
+- **Error handling**: Typed exception/failure pipeline with `Result<T>`.
+- **Storage layer**: Modular secure storage for session and preferences.
 - **UI components**: Atomic design (atoms, molecules, organisms) and reusable shell layout.
+- **Network layer**: Centralized API client with auth interceptor.
 
 ---
 
 ## Architecture Overview
 
+Bu bölümde mimariyi iki seviyede gösteriyoruz:
+
+- **Yüksek seviye (kavramsal)**: Yeni başlayanların akışı hızlıca anlaması için.
+- **Detaylı seviye (teknik)**: Sınıf ve modül bazında bağımlılıkları görmek isteyenler için.
+
+### High-level architecture
+
 ```mermaid
 flowchart TB
+  subgraph presentation ["Presentation (UI + State)"]
+    AuthScreens["Auth screens (Login / Register)"]
+    ProfileScreens["Profile / Home screens"]
+    Notifiers["State notifiers (AuthNotifier / ThemeNotifier)"]
+  end
+
+  subgraph features ["Features (Domain + Data)"]
+    AuthFeature["Auth feature (AuthRepository + AuthApi)"]
+  end
+
+  subgraph core ["Core services"]
+    CoreNetwork["Network (ApiClient + AuthInterceptor)"]
+    CoreErrors["Error handling (AppException, Failure, ErrorMapper, Result)"]
+    CoreModels["Models (User, Session, Profile)"]
+  end
+
+  subgraph storage ["Storage"]
+    SessionStore["Session storage (SessionStorage)"]
+    PrefStore["Preferences storage (PreferencesStorage)"]
+    SecureStore["Secure storage impl (SecureStorage + impl)"]
+  end
+
+  subgraph routing ["Routing"]
+    Router["GoRouter config (AppRouter + route builders)"]
+    Guards["Route guards (AuthGuard)"]
+  end
+
+  %% Dependencies / call direction: A --> B means "A depends on / calls B"
+  presentation --> features
+  features --> CoreNetwork
+  features --> SessionStore
+  Notifiers --> PrefStore
+
+  SessionStore --> SecureStore
+  PrefStore --> SecureStore
+
+  features --> CoreErrors
+
+  presentation --> routing
+  routing --> Router
+```
+
+### Detailed architecture
+
+```mermaid
+flowchart TB
+  %% Presentation layer
   subgraph presentation ["Presentation"]
     LoginScreen
     RegisterScreen
@@ -27,10 +82,13 @@ flowchart TB
     ThemeNotifier
   end
 
-  subgraph domain ["Domain / Data"]
+  %% Feature / domain + data layer
+  subgraph feature_layer ["Features (Domain + Data)"]
     AuthRepository
+    AuthApi
   end
 
+  %% Core infra
   subgraph core ["Core"]
     subgraph errors ["Errors"]
       ErrorMapper
@@ -44,6 +102,7 @@ flowchart TB
     AuthInterceptor
   end
 
+  %% Storage
   subgraph storage ["Storage"]
     SecureStorage["SecureStorage (interface)"]
     SecureStorageImpl["SecureStorageImpl"]
@@ -53,6 +112,7 @@ flowchart TB
     SecurePreferencesStorage["SecurePreferencesStorage"]
   end
 
+  %% Routing
   subgraph routing ["Routing"]
     AppRouter
     AuthRoutes
@@ -61,10 +121,14 @@ flowchart TB
     AuthGuard
   end
 
-  presentation --> domain
-  domain --> ApiClient
+  %% Dependency direction: A --> B means "A depends on / calls B"
+  presentation --> feature_layer
+  feature_layer --> ApiClient
+  feature_layer --> SessionStorage
+  feature_layer --> ErrorMapper
+
   ApiClient --> AuthInterceptor
-  domain --> SessionStorage
+
   SessionStorage -.impl.-> SecureSessionStorage
   SecureSessionStorage --> SecureStorage
   SecureStorage -.impl.-> SecureStorageImpl
@@ -73,24 +137,21 @@ flowchart TB
   PreferencesStorage -.impl.-> SecurePreferencesStorage
   SecurePreferencesStorage --> SecureStorage
 
-  domain --> ErrorMapper
   ErrorMapper --> FailureTypes
 
   presentation --> routing
   routing --> AppRouter
 ```
 
-Bu şema, ayrıntıları `docs/*.md` altındaki dokümanlarda anlatılan katmanların birbirleriyle ilişkisini özetler.
-
 ---
 
-## Development Setup (Dev Environment)
+## Getting Started
 
 ### Prerequisites
 
 - **Flutter SDK**: latest stable
 - **Dart SDK**: 3.9+
-- **Backend API**: varsayılan olarak `http://localhost:3000`
+- **Backend API**: defaults to `http://localhost:3000`
 
 ### Clone & Install
 
@@ -100,145 +161,64 @@ cd flutter-frontend-boilerplate
 flutter pub get
 ```
 
-### Configure API (Dev)
+### Configure API
 
-Varsayılan backend URL’si:
-
-- Dosya: `lib/core/config/app_config.dart`
-- Alan: `AppConfig.apiBaseUrl`
+The default backend URL lives in `lib/core/config/app_config.dart`:
 
 ```dart
 class AppConfig {
   const AppConfig._();
 
-  /// Base URL for the backend API.
-  ///
-  /// In a real project, consider using flavors or `--dart-define` to override
-  /// this per environment (dev, staging, prod).
   static const String apiBaseUrl = 'http://localhost:3000';
 }
 ```
 
-Geliştirme ortamında:
+- For local development this default is usually sufficient.
+- For production, change it to your production endpoint or use Flutter flavors / `--dart-define` for environment-specific configuration (see [Config docs](docs/en/Config.md)).
 
-- Backend lokalde çalışıyorsa bu değer çoğu durumda yeterlidir.
-- Farklı bir dev/staging ortamı kullanıyorsanız bu sabiti ilgili URL ile güncelleyebilirsiniz.
-
-### Run (Dev)
+### Run
 
 ```bash
 flutter run
 ```
 
-Bu komut:
-
-- `main.dart` üzerinden uygulamayı başlatır,
-- `AppRouter.createRouter(context)` ile routing’i,
-- `AuthNotifier` ve `ThemeNotifier` ile auth/theme state’ini hazırlar.
+This launches the app through `main.dart`, sets up routing via `AppRouter.createRouter(context)`, and initializes `AuthNotifier` and `ThemeNotifier`.
 
 ---
 
-## Production Setup (Build & Config)
-
-### Configure API (Prod)
-
-Prod ortamında, backend URL’sini production endpoint’inize ayarlayın:
-
-1. `lib/core/config/app_config.dart` içindeki `apiBaseUrl` değerini prod URL’nizle değiştirin:
-   ```dart
-   static const String apiBaseUrl = 'https://api.yourdomain.com';
-   ```
-2. Alternatif olarak, gerçek projede Flutter **flavors** veya `--dart-define` ile environment bazlı config kullanabilirsiniz (yorum satırındaki notlara bakın ve kendi projenizde uygularsınız).
-
-> Not: Bu boilerplate, basitlik için tek bir `AppConfig` sınıfı ile gelir; environment spesifik yapılandırmayı kendi projelerinizde genişletebilirsiniz.
-
-### Build Commands
-
-Mobil:
+## Build for Production
 
 ```bash
 # Android
 flutter build apk --release
 
-# iOS (Xcode / ipa için)
+# iOS
 flutter build ios --release
-```
 
-Web:
-
-```bash
+# Web
 flutter build web --release
-```
 
-Desktop (opsiyonel, platform desteğine göre):
-
-```bash
+# Desktop (optional)
 flutter build macos --release
 flutter build windows --release
 flutter build linux --release
 ```
 
-Prod deploy öncesi:
-
-- `AppConfig.apiBaseUrl` değerinin production backend’i işaret ettiğinden,
-- Authentication/refresh akışının prod backend’de düzgün çalıştığından emin olun.
+Before deploying, ensure `AppConfig.apiBaseUrl` points to your production backend and that the auth/refresh flow works against it.
 
 ---
 
-## Project Structure (lib/)
+## Project Structure
 
 ```text
 lib/
-├── main.dart                    # Entry point; providers, router, theme
-├── core/                        # Shared infrastructure (config, errors, models, network, storage)
-├── features/                    # Feature modules (auth, profile, etc.)
-├── routing/                     # GoRouter setup and route definitions
-├── theme/                       # Theme data, notifier, design tokens
-└── ui/                          # Reusable UI components (atoms/molecules/organisms/layout)
+├── main.dart           # Entry point; providers, router, theme
+├── core/               # Shared infrastructure (config, errors, models, network, storage)
+├── features/           # Feature modules (auth, profile, etc.)
+├── routing/            # GoRouter setup and route definitions
+├── theme/              # Theme data, notifier, design tokens
+└── ui/                 # Reusable UI components (atoms/molecules/organisms/layout)
 ```
-
-Detaylar:
-
-- **Routing**: Ayrıntılı routing ve shell mimarisi için [`docs/Routing.md`](docs/Routing.md).
-- **Theme**: Tema token’ları, ThemeNotifier ve migration rehberi için [`docs/ThemeProvider.md`](docs/ThemeProvider.md).
-- **User**: User modeli, JSON parsing helper’ları ve extensions için [`docs/User.md`](docs/User.md).
-- **Error Handling**: Exception → Failure mapping ve Result tipi için [`docs/ErrorHandling.md`](docs/ErrorHandling.md).
-- **Storage**: Secure storage, session ve preferences katmanları için [`docs/Storage.md`](docs/Storage.md).
-
----
-
-## Core Modules (High-Level)
-
-Bu bölüm, detaylı dokümanlara hızlı bir giriş niteliğindedir. Ayrıntı için ilgili `docs/*.md` dosyalarına bakın.
-
-### Routing (`lib/routing/`)
-
-- `AppRouter.createRouter(context, { RoutingMode mode = RoutingMode.plain })` ile GoRouter kurulumu.
-- `AuthGuard` ile login zorunluluğu ve auth sayfalarından redirect.
-- `AuthRoutes`, `ProfileRoutes`, `ShellRoutes` ile modüler route tanımı.
-- Shell layout (bottom nav, `MainShell`) ve yeni feature ekleme rehberi için [`docs/Routing.md`](docs/Routing.md).
-
-### Theme (`lib/theme/`)
-
-- `AppThemeData` (Freezed) + scheme’ler (colors/typography/spacing/radius).
-- `ThemeNotifier` ile `ThemeMode` state yönetimi ve kalıcı tema tercihleri.
-- `ThemeBuilder` + `AppThemeData.toThemeData()` ile Material `ThemeData` üretimi.
-- UI tarafında `BuildContext` extension’ları ile token erişimi — detay için [`docs/ThemeProvider.md`](docs/ThemeProvider.md).
-
-### User & Auth (`lib/core/models/user/`, `lib/features/auth/`)
-
-- `User` modeli backend Prisma şemasına uyumludur; JSON parsing helper’ları `user_json.dart` içindedir.
-- `AuthApi` login/register/refresh/logout/getMe endpoint’lerini kapsar.
-- `AuthRepository` token & session yönetimini `SessionStorage` ile birleştirir.
-- Auth state yönetimi (`AuthNotifier`, `AuthState`) ve UI akışı için [`docs/User.md`](docs/User.md) ve [`docs/ErrorHandling.md`](docs/ErrorHandling.md) dokümanlarına bakın.
-
-### Storage (`lib/core/storage/`)
-
-- `SecureStorage` / `SecureStorageImpl`: generic, platform-aware key–value storage.
-- `StorageKeys`: tüm storage anahtarlarının merkezi tanımı.
-- `SessionStorage` / `SecureSessionStorage`: access/refresh token, deviceId ve `User`’ın saklanması.
-- `PreferencesStorage` / `SecurePreferencesStorage`: `ThemeMode` ve gelecekteki kullanıcı tercihleri.
-- Tasarım detayları ve genişletme rehberi için [`docs/Storage.md`](docs/Storage.md).
 
 ---
 
@@ -263,31 +243,40 @@ sequenceDiagram
   Repo-->>Notifier: Result<User>
   Notifier-->>UI: AuthenticatedState(user)
 
-  Note over Repo,Api: On 401 responses, AuthInterceptor\ncan trigger refresh via AuthRepository.refreshAccessToken()
+  Note over Repo,Api: On 401 responses, AuthInterceptor<br/>triggers refresh via AuthRepository.refreshAccessToken()
 ```
-
-Bu diyagramın alt katman detayları için:
-
-- User modeli ve JSON helper’ları: [`docs/User.md`](docs/en/User.md)
-- Error/Failure akışı: [`docs/ErrorHandling.md`](docs/en/ErrorHandling.md)
-- Storage katmanı: [`docs/Storage.md`](docs/en/Storage.md)
 
 ---
 
-## Documentation Index
+## Documentation
 
-| Konu | Dosya |
-|------|-------|
-| Routing (modüler yapı, guards, shell, yeni route/feature) | [`docs/Routing.md`](docs/en/Routing.md) |
-| Theme provider & design tokens | [`docs/ThemeProvider.md`](docs/en/ThemeProvider.md) |
-| UI component sistemi (atoms/molecules/organisms) | [`docs/UI.md`](docs/en/UI.md) |
-| User modeli, JSON parsing, extensions | [`docs/User.md`](docs/en/User.md) |
-| Error & exception handling, Result tipi | [`docs/ErrorHandling.md`](docs/en/ErrorHandling.md) |
-| Storage & session architecture | [`docs/Storage.md`](docs/en/Storage.md) |
-| Auth flow & session yönetimi | [`docs/Auth.md`](docs/en/Auth.md) |
-| Network layer (ApiClient & interceptors) | [`docs/Network.md`](docs/en/Network.md) |
-| Configuration & environments | [`docs/Config.md`](docs/en/Config.md) |
-| Testing rehberi | [`docs/Testing.md`](docs/en/Testing.md) |
+Docs are bilingual: English (`docs/en/`) and Turkish (`docs/tr/`).
+
+If you are new to the repository, start with these (in order):
+
+1. **Theme system & tokens** -- [ThemeProvider.md](docs/en/ThemeProvider.md)
+2. **UI component system** -- [UI.md](docs/en/UI.md)
+3. **Routing (GoRouter + guards + shell)** -- [Routing.md](docs/en/Routing.md)
+4. **Storage (session + preferences)** -- [Storage.md](docs/en/Storage.md)
+5. **Error handling (Exception / Failure / Result)** -- [ErrorHandling.md](docs/en/ErrorHandling.md)
+6. **User model module** -- [User.md](docs/en/User.md)
+
+Core platform docs:
+
+| Topic | EN | TR |
+|-------|----|----|
+| Auth flow & session management | [Auth.md](docs/en/Auth.md) | [Auth.tr.md](docs/tr/Auth.tr.md) |
+| Network layer (ApiClient & interceptors) | [Network.md](docs/en/Network.md) | [Network.tr.md](docs/tr/Network.tr.md) |
+| Configuration & environments | [Config.md](docs/en/Config.md) | [Config.tr.md](docs/tr/Config.tr.md) |
+| Testing guide | [Testing.md](docs/en/Testing.md) | [Testing.tr.md](docs/tr/Testing.tr.md) |
+| Theme provider & design tokens | [ThemeProvider.md](docs/en/ThemeProvider.md) | [ThemeProvider.tr.md](docs/tr/ThemeProvider.tr.md) |
+| UI component system | [UI.md](docs/en/UI.md) | [UI.tr.md](docs/tr/UI.tr.md) |
+| Routing | [Routing.md](docs/en/Routing.md) | [Routing.tr.md](docs/tr/Routing.tr.md) |
+| Storage & session architecture | [Storage.md](docs/en/Storage.md) | [Storage.tr.md](docs/tr/Storage.tr.md) |
+| Error & exception handling | [ErrorHandling.md](docs/en/ErrorHandling.md) | [ErrorHandling.tr.md](docs/tr/ErrorHandling.tr.md) |
+| User model & JSON parsing | [User.md](docs/en/User.md) | [User.tr.md](docs/tr/User.tr.md) |
+
+Documentation style guide: [STYLE.md](docs/en/STYLE.md) | [STYLE.tr.md](docs/tr/STYLE.tr.md)
 
 ---
 
@@ -297,4 +286,3 @@ Bu diyagramın alt katman detayları için:
 - [GoRouter](https://pub.dev/packages/go_router)
 - [Provider](https://pub.dev/packages/provider)
 - [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
-

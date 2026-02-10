@@ -103,7 +103,7 @@ Dosyaya referans verip davranışı anlatın:
 
 - `docs/` içinde relative link kullanın (örn. `[Theme](ThemeProvider.md)`).
 - Kod dosyası referanslarında path’i backtick ile belirtin.
-- `docs/README.md` index dosyası güncel tutulmalı; her doküman listelenmeli.
+- Proje kök `README.md` içindeki dokümantasyon index'i güncel tutulmalı; her doküman listelenmeli.
 
 ---
 

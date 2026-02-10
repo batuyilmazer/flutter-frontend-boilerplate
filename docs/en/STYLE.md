@@ -101,7 +101,7 @@ Link to the file and explain behavior:
 
 - Use relative links inside `docs/` (e.g. `[Theme](ThemeProvider.md)`).
 - When referencing a code file, include its path in backticks.
-- Keep an updated `docs/README.md` index and ensure every doc is listed there.
+- Keep the project `README.md` documentation index updated and ensure every doc is listed there.
 
 ---
 
