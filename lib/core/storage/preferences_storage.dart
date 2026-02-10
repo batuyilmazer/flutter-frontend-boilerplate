@@ -9,4 +9,3 @@ abstract class PreferencesStorage {
 
   Future<void> saveThemeMode(ThemeMode mode);
 }
-

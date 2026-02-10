@@ -9,7 +9,7 @@ import 'session_storage.dart';
 /// Default implementation of [SessionStorage] backed by [SecureStorage].
 class SecureSessionStorage implements SessionStorage {
   SecureSessionStorage({SecureStorage? storage})
-      : _storage = storage ?? SecureStorageImpl();
+    : _storage = storage ?? SecureStorageImpl();
 
   final SecureStorage _storage;
 
@@ -75,4 +75,3 @@ class SecureSessionStorage implements SessionStorage {
     await _storage.delete(StorageKeys.user);
   }
 }
-

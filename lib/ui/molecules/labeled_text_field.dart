@@ -60,15 +60,8 @@ class LabeledTextField extends StatelessWidget {
       children: [
         Row(
           children: [
-            AppText.bodySmall(
-              label,
-              color: colors.textPrimary,
-            ),
-            if (isRequired)
-              AppText.bodySmall(
-                ' *',
-                color: colors.error,
-              ),
+            AppText.bodySmall(label, color: colors.textPrimary),
+            if (isRequired) AppText.bodySmall(' *', color: colors.error),
           ],
         ),
         SizedBox(height: spacing.s8),
@@ -94,4 +87,3 @@ class LabeledTextField extends StatelessWidget {
     );
   }
 }
-

@@ -36,8 +36,7 @@ class HomeScreen extends StatelessWidget {
             children: [
               AppText.headline('Welcome!'),
               SizedBox(height: context.appSpacing.s8),
-              if (user != null)
-                AppText.body('Email: ${user.email}'),
+              if (user != null) AppText.body('Email: ${user.email}'),
               SizedBox(height: context.appSpacing.s16),
               AppButton(
                 label: 'Profile',
@@ -70,4 +69,3 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
-

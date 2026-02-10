@@ -8,11 +8,10 @@ abstract class SecureStorage {
   Future<String?> read(String key);
 
   Future<void> delete(String key);
-  
+
   /// Delete all stored keys.
   Future<void> deleteAll();
 
   /// Read all stored key-value pairs.
   Future<Map<String, String>> readAll();
 }
-

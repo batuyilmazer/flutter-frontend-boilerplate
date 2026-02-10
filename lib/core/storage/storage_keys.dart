@@ -11,4 +11,3 @@ class StorageKeys {
   // App preferences
   static const themeMode = 'theme_mode';
 }
-

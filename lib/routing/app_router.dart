@@ -14,10 +14,7 @@ import 'builders/shell_routes.dart';
 /// - [RoutingMode.plain]: Use feature routes directly (no shell layout).
 /// - [RoutingMode.shell]: Host authenticated area inside a ShellRoute-based
 ///   layout (e.g. bottom navigation).
-enum RoutingMode {
-  plain,
-  shell,
-}
+enum RoutingMode { plain, shell }
 
 /// Main application router configuration.
 ///

@@ -8,7 +8,7 @@ import 'preferences_storage.dart';
 /// Default implementation of [PreferencesStorage] backed by [SecureStorage].
 class SecurePreferencesStorage implements PreferencesStorage {
   SecurePreferencesStorage({SecureStorage? storage})
-      : _storage = storage ?? SecureStorageImpl();
+    : _storage = storage ?? SecureStorageImpl();
 
   final SecureStorage _storage;
 
@@ -28,4 +28,3 @@ class SecurePreferencesStorage implements PreferencesStorage {
     await _storage.write(StorageKeys.themeMode, mode.name);
   }
 }
-

@@ -268,9 +268,9 @@ sequenceDiagram
 
 Bu diyagramın alt katman detayları için:
 
-- User modeli ve JSON helper’ları: [`docs/User.md`](docs/User.md)
-- Error/Failure akışı: [`docs/ErrorHandling.md`](docs/ErrorHandling.md)
-- Storage katmanı: [`docs/Storage.md`](docs/Storage.md)
+- User modeli ve JSON helper’ları: [`docs/User.md`](docs/en/User.md)
+- Error/Failure akışı: [`docs/ErrorHandling.md`](docs/en/ErrorHandling.md)
+- Storage katmanı: [`docs/Storage.md`](docs/en/Storage.md)
 
 ---
 
@@ -278,11 +278,16 @@ Bu diyagramın alt katman detayları için:
 
 | Konu | Dosya |
 |------|-------|
-| Routing (modüler yapı, guards, shell, yeni route/feature) | [`docs/Routing.md`](docs/Routing.md) |
-| Theme provider & design tokens | [`docs/ThemeProvider.md`](docs/ThemeProvider.md) |
-| User modeli, JSON parsing, extensions | [`docs/User.md`](docs/User.md) |
-| Error & exception handling, Result tipi | [`docs/ErrorHandling.md`](docs/ErrorHandling.md) |
-| Storage & session architecture | [`docs/Storage.md`](docs/Storage.md) |
+| Routing (modüler yapı, guards, shell, yeni route/feature) | [`docs/Routing.md`](docs/en/Routing.md) |
+| Theme provider & design tokens | [`docs/ThemeProvider.md`](docs/en/ThemeProvider.md) |
+| UI component sistemi (atoms/molecules/organisms) | [`docs/UI.md`](docs/en/UI.md) |
+| User modeli, JSON parsing, extensions | [`docs/User.md`](docs/en/User.md) |
+| Error & exception handling, Result tipi | [`docs/ErrorHandling.md`](docs/en/ErrorHandling.md) |
+| Storage & session architecture | [`docs/Storage.md`](docs/en/Storage.md) |
+| Auth flow & session yönetimi | [`docs/Auth.md`](docs/en/Auth.md) |
+| Network layer (ApiClient & interceptors) | [`docs/Network.md`](docs/en/Network.md) |
+| Configuration & environments | [`docs/Config.md`](docs/en/Config.md) |
+| Testing rehberi | [`docs/Testing.md`](docs/en/Testing.md) |
 
 ---
 

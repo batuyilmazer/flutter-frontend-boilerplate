@@ -37,12 +37,12 @@ class User with _$User {
 /// toJson (Freezed does not generate it when using custom fromJson).
 extension UserJsonExtension on User {
   Map<String, dynamic> toJson() => <String, dynamic>{
-        'id': id,
-        'email': email,
-        'emailVerified': emailVerified,
-        'isSuspended': isSuspended,
-        if (lastLoginAt != null) 'lastLoginAt': lastLoginAt!.toIso8601String(),
-        if (createdAt != null) 'createdAt': createdAt!.toIso8601String(),
-        if (updatedAt != null) 'updatedAt': updatedAt!.toIso8601String(),
-      };
+    'id': id,
+    'email': email,
+    'emailVerified': emailVerified,
+    'isSuspended': isSuspended,
+    if (lastLoginAt != null) 'lastLoginAt': lastLoginAt!.toIso8601String(),
+    if (createdAt != null) 'createdAt': createdAt!.toIso8601String(),
+    if (updatedAt != null) 'updatedAt': updatedAt!.toIso8601String(),
+  };
 }

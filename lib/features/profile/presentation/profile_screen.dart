@@ -52,7 +52,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
               SizedBox(height: spacing.s8),
               _Row(label: 'Id', value: user.id),
               _Row(label: 'Email', value: user.email),
-              _Row(label: 'Email verified', value: user.emailVerified.toString()),
+              _Row(
+                label: 'Email verified',
+                value: user.emailVerified.toString(),
+              ),
               _Row(label: 'Suspended', value: user.isSuspended.toString()),
               _Row(
                 label: 'Last login',
@@ -93,10 +96,7 @@ class _Row extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            width: 120,
-            child: AppText.body('$label:'),
-          ),
+          SizedBox(width: 120, child: AppText.body('$label:')),
           Expanded(child: AppText.body(value)),
         ],
       ),

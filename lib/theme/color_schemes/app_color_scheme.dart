@@ -17,14 +17,35 @@ abstract class AppColorScheme {
   /// Secondary text color (for hints, labels, etc.)
   Color get textSecondary;
 
+  /// Disabled text color
+  Color get textDisabled;
+
   /// Error color
   Color get error;
 
   /// Success color
   Color get success;
 
+  /// Warning color
+  Color get warning;
+
+  /// Informational color
+  Color get info;
+
   /// Surface color (for cards, inputs, etc.)
   Color get surface;
+
+  /// Alternate surface color (for skeleton backgrounds, zebra rows, etc.)
+  Color get surfaceVariant;
+
+  /// Subtle border color
+  Color get border;
+
+  /// Disabled state fill color
+  Color get disabled;
+
+  /// Semi-transparent overlay / scrim color
+  Color get overlay;
 
   /// Material Design 3 ColorScheme
   ///

@@ -19,4 +19,3 @@ class ValidationFailure extends Failure {
   /// }
   final Map<String, List<String>> fieldErrors;
 }
-

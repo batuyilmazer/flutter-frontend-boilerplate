@@ -31,15 +31,11 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
           create: (_) => AuthNotifier(
-            authRepository: AuthRepository(
-              sessionStorage: sessionStorage,
-            ),
+            authRepository: AuthRepository(sessionStorage: sessionStorage),
           ),
         ),
         ChangeNotifierProvider(
-          create: (_) => ThemeNotifier(
-            preferencesStorage: preferencesStorage,
-          ),
+          create: (_) => ThemeNotifier(preferencesStorage: preferencesStorage),
         ),
       ],
       child: Consumer<ThemeNotifier>(

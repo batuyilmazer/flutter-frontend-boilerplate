@@ -7,4 +7,3 @@ export 'network_failure.dart';
 export 'result.dart';
 export 'storage_failure.dart';
 export 'validation_failure.dart';
-

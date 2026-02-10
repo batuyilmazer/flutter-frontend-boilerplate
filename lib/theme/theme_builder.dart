@@ -37,11 +37,11 @@ class ThemeBuilder {
         fillColor: appTheme.colors.surface,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(appTheme.radius.medium),
-          borderSide: BorderSide(color: appTheme.colors.textSecondary),
+          borderSide: BorderSide(color: appTheme.colors.border),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(appTheme.radius.medium),
-          borderSide: BorderSide(color: appTheme.colors.textSecondary),
+          borderSide: BorderSide(color: appTheme.colors.border),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(appTheme.radius.medium),
@@ -54,6 +54,10 @@ class ThemeBuilder {
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(appTheme.radius.medium),
           borderSide: BorderSide(color: appTheme.colors.error, width: 2),
+        ),
+        disabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(appTheme.radius.medium),
+          borderSide: BorderSide(color: appTheme.colors.disabled),
         ),
         labelStyle: appTheme.typography.bodySmall.copyWith(
           color: appTheme.colors.textSecondary,
@@ -98,7 +102,7 @@ class ThemeBuilder {
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: appTheme.colors.textPrimary,
-          side: BorderSide(color: appTheme.colors.textSecondary),
+          side: BorderSide(color: appTheme.colors.border),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(appTheme.radius.medium),
           ),
@@ -116,9 +120,7 @@ class ThemeBuilder {
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(appTheme.radius.medium),
-          side: BorderSide(
-            color: appTheme.colors.textSecondary.withValues(alpha: 0.1),
-          ),
+          side: BorderSide(color: appTheme.colors.border),
         ),
         margin: EdgeInsets.all(appTheme.spacing.s8),
       ),
@@ -164,6 +166,24 @@ class ThemeBuilder {
         ),
       ),
 
+      // Checkbox theme
+      checkboxTheme: CheckboxThemeData(
+        fillColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.disabled)) {
+            return appTheme.colors.disabled;
+          }
+          if (states.contains(WidgetState.selected)) {
+            return appTheme.colors.primary;
+          }
+          return Colors.transparent;
+        }),
+        checkColor: WidgetStateProperty.all(Colors.white),
+        side: BorderSide(color: appTheme.colors.border, width: 1.5),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(appTheme.radius.small),
+        ),
+      ),
+
       // Switch theme
       switchTheme: SwitchThemeData(
         thumbColor: WidgetStateProperty.resolveWith((states) {
@@ -180,11 +200,95 @@ class ThemeBuilder {
         }),
       ),
 
+      // Radio theme
+      radioTheme: RadioThemeData(
+        fillColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.disabled)) {
+            return appTheme.colors.disabled;
+          }
+          if (states.contains(WidgetState.selected)) {
+            return appTheme.colors.primary;
+          }
+          return appTheme.colors.textSecondary;
+        }),
+      ),
+
+      // Progress indicator theme
+      progressIndicatorTheme: ProgressIndicatorThemeData(
+        color: appTheme.colors.primary,
+        linearTrackColor: appTheme.colors.border,
+        circularTrackColor: appTheme.colors.border,
+      ),
+
+      // Tab bar theme
+      tabBarTheme: TabBarThemeData(
+        labelColor: appTheme.colors.primary,
+        unselectedLabelColor: appTheme.colors.textSecondary,
+        labelStyle: appTheme.typography.button,
+        unselectedLabelStyle: appTheme.typography.button,
+        indicatorColor: appTheme.colors.primary,
+        indicatorSize: TabBarIndicatorSize.tab,
+        dividerColor: appTheme.colors.border,
+      ),
+
+      // Date picker theme
+      datePickerTheme: DatePickerThemeData(
+        backgroundColor: appTheme.colors.surface,
+        headerBackgroundColor: appTheme.colors.primary,
+        headerForegroundColor: Colors.white,
+        dayStyle: appTheme.typography.body,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(appTheme.radius.large),
+        ),
+      ),
+
+      // Dropdown menu theme
+      dropdownMenuTheme: DropdownMenuThemeData(
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: appTheme.colors.surface,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(appTheme.radius.medium),
+            borderSide: BorderSide(color: appTheme.colors.border),
+          ),
+        ),
+      ),
+
       // Divider theme
       dividerTheme: DividerThemeData(
-        color: appTheme.colors.textSecondary.withValues(alpha: 0.2),
+        color: appTheme.colors.border,
         thickness: 1,
         space: 1,
+      ),
+
+      // Snackbar theme (for Toast)
+      snackBarTheme: SnackBarThemeData(
+        backgroundColor: appTheme.colors.surface,
+        contentTextStyle: appTheme.typography.body.copyWith(
+          color: appTheme.colors.textPrimary,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(appTheme.radius.medium),
+        ),
+        behavior: SnackBarBehavior.floating,
+        elevation: 4,
+      ),
+
+      // Drawer theme
+      drawerTheme: DrawerThemeData(
+        backgroundColor: appTheme.colors.surface,
+        elevation: 8,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.horizontal(right: Radius.circular(0)),
+        ),
+      ),
+
+      // Slider theme
+      sliderTheme: SliderThemeData(
+        activeTrackColor: appTheme.colors.primary,
+        inactiveTrackColor: appTheme.colors.border,
+        thumbColor: appTheme.colors.primary,
+        overlayColor: appTheme.colors.primary.withValues(alpha: 0.12),
       ),
 
       // Typography

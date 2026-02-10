@@ -73,15 +73,9 @@ class AppTextField extends StatelessWidget {
         prefixIcon: prefixIcon,
         suffixIcon: suffixIcon,
         errorText: errorText,
-        labelStyle: typography.bodySmall.copyWith(
-          color: colors.textSecondary,
-        ),
-        hintStyle: typography.bodySmall.copyWith(
-          color: colors.textSecondary,
-        ),
-        errorStyle: typography.caption.copyWith(
-          color: colors.error,
-        ),
+        labelStyle: typography.bodySmall.copyWith(color: colors.textSecondary),
+        hintStyle: typography.bodySmall.copyWith(color: colors.textSecondary),
+        errorStyle: typography.caption.copyWith(color: colors.error),
         filled: true,
         fillColor: enabled ? colors.surface : colors.background,
         border: OutlineInputBorder(
@@ -116,4 +110,3 @@ class AppTextField extends StatelessWidget {
     );
   }
 }
-

@@ -21,6 +21,8 @@ mixin _$AppThemeData {
   AppTypographyScheme get typography => throw _privateConstructorUsedError;
   AppSpacingScheme get spacing => throw _privateConstructorUsedError;
   AppRadiusScheme get radius => throw _privateConstructorUsedError;
+  AppSizeScheme get sizes => throw _privateConstructorUsedError;
+  AppShadowScheme get shadows => throw _privateConstructorUsedError;
 
   /// Create a copy of AppThemeData
   /// with the given fields replaced by the non-null parameter values.
@@ -41,6 +43,8 @@ abstract class $AppThemeDataCopyWith<$Res> {
     AppTypographyScheme typography,
     AppSpacingScheme spacing,
     AppRadiusScheme radius,
+    AppSizeScheme sizes,
+    AppShadowScheme shadows,
   });
 }
 
@@ -63,6 +67,8 @@ class _$AppThemeDataCopyWithImpl<$Res, $Val extends AppThemeData>
     Object? typography = null,
     Object? spacing = null,
     Object? radius = null,
+    Object? sizes = null,
+    Object? shadows = null,
   }) {
     return _then(
       _value.copyWith(
@@ -82,6 +88,14 @@ class _$AppThemeDataCopyWithImpl<$Res, $Val extends AppThemeData>
                 ? _value.radius
                 : radius // ignore: cast_nullable_to_non_nullable
                       as AppRadiusScheme,
+            sizes: null == sizes
+                ? _value.sizes
+                : sizes // ignore: cast_nullable_to_non_nullable
+                      as AppSizeScheme,
+            shadows: null == shadows
+                ? _value.shadows
+                : shadows // ignore: cast_nullable_to_non_nullable
+                      as AppShadowScheme,
           )
           as $Val,
     );
@@ -102,6 +116,8 @@ abstract class _$$AppThemeDataImplCopyWith<$Res>
     AppTypographyScheme typography,
     AppSpacingScheme spacing,
     AppRadiusScheme radius,
+    AppSizeScheme sizes,
+    AppShadowScheme shadows,
   });
 }
 
@@ -123,6 +139,8 @@ class __$$AppThemeDataImplCopyWithImpl<$Res>
     Object? typography = null,
     Object? spacing = null,
     Object? radius = null,
+    Object? sizes = null,
+    Object? shadows = null,
   }) {
     return _then(
       _$AppThemeDataImpl(
@@ -142,6 +160,14 @@ class __$$AppThemeDataImplCopyWithImpl<$Res>
             ? _value.radius
             : radius // ignore: cast_nullable_to_non_nullable
                   as AppRadiusScheme,
+        sizes: null == sizes
+            ? _value.sizes
+            : sizes // ignore: cast_nullable_to_non_nullable
+                  as AppSizeScheme,
+        shadows: null == shadows
+            ? _value.shadows
+            : shadows // ignore: cast_nullable_to_non_nullable
+                  as AppShadowScheme,
       ),
     );
   }
@@ -155,6 +181,8 @@ class _$AppThemeDataImpl extends _AppThemeData {
     required this.typography,
     required this.spacing,
     required this.radius,
+    required this.sizes,
+    required this.shadows,
   }) : super._();
 
   @override
@@ -165,10 +193,14 @@ class _$AppThemeDataImpl extends _AppThemeData {
   final AppSpacingScheme spacing;
   @override
   final AppRadiusScheme radius;
+  @override
+  final AppSizeScheme sizes;
+  @override
+  final AppShadowScheme shadows;
 
   @override
   String toString() {
-    return 'AppThemeData(colors: $colors, typography: $typography, spacing: $spacing, radius: $radius)';
+    return 'AppThemeData(colors: $colors, typography: $typography, spacing: $spacing, radius: $radius, sizes: $sizes, shadows: $shadows)';
   }
 
   @override
@@ -180,12 +212,21 @@ class _$AppThemeDataImpl extends _AppThemeData {
             (identical(other.typography, typography) ||
                 other.typography == typography) &&
             (identical(other.spacing, spacing) || other.spacing == spacing) &&
-            (identical(other.radius, radius) || other.radius == radius));
+            (identical(other.radius, radius) || other.radius == radius) &&
+            (identical(other.sizes, sizes) || other.sizes == sizes) &&
+            (identical(other.shadows, shadows) || other.shadows == shadows));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, colors, typography, spacing, radius);
+  int get hashCode => Object.hash(
+    runtimeType,
+    colors,
+    typography,
+    spacing,
+    radius,
+    sizes,
+    shadows,
+  );
 
   /// Create a copy of AppThemeData
   /// with the given fields replaced by the non-null parameter values.
@@ -202,6 +243,8 @@ abstract class _AppThemeData extends AppThemeData {
     required final AppTypographyScheme typography,
     required final AppSpacingScheme spacing,
     required final AppRadiusScheme radius,
+    required final AppSizeScheme sizes,
+    required final AppShadowScheme shadows,
   }) = _$AppThemeDataImpl;
   const _AppThemeData._() : super._();
 
@@ -213,6 +256,10 @@ abstract class _AppThemeData extends AppThemeData {
   AppSpacingScheme get spacing;
   @override
   AppRadiusScheme get radius;
+  @override
+  AppSizeScheme get sizes;
+  @override
+  AppShadowScheme get shadows;
 
   /// Create a copy of AppThemeData
   /// with the given fields replaced by the non-null parameter values.
