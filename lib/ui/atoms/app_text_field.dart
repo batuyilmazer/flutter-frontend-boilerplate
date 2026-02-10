@@ -73,39 +73,33 @@ class AppTextField extends StatelessWidget {
         prefixIcon: prefixIcon,
         suffixIcon: suffixIcon,
         errorText: errorText,
-        labelStyle: typography.bodySmall.copyWith(
-          color: colors.textSecondary,
-        ),
-        hintStyle: typography.bodySmall.copyWith(
-          color: colors.textSecondary,
-        ),
-        errorStyle: typography.caption.copyWith(
-          color: colors.error,
-        ),
+        labelStyle: typography.bodySmall.copyWith(color: colors.textSecondary),
+        hintStyle: typography.bodySmall.copyWith(color: colors.textSecondary),
+        errorStyle: typography.caption.copyWith(color: colors.error),
         filled: true,
         fillColor: enabled ? colors.surface : colors.background,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(radius.medium),
+          borderRadius: BorderRadius.circular(radius.input),
           borderSide: BorderSide(color: colors.textSecondary),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(radius.medium),
+          borderRadius: BorderRadius.circular(radius.input),
           borderSide: BorderSide(color: colors.textSecondary),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(radius.medium),
+          borderRadius: BorderRadius.circular(radius.input),
           borderSide: BorderSide(color: colors.primary, width: 2),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(radius.medium),
+          borderRadius: BorderRadius.circular(radius.input),
           borderSide: BorderSide(color: colors.error),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(radius.medium),
+          borderRadius: BorderRadius.circular(radius.input),
           borderSide: BorderSide(color: colors.error, width: 2),
         ),
         disabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(radius.medium),
+          borderRadius: BorderRadius.circular(radius.input),
           borderSide: BorderSide(color: colors.textSecondary),
         ),
         contentPadding: EdgeInsets.symmetric(
@@ -116,4 +110,3 @@ class AppTextField extends StatelessWidget {
     );
   }
 }
-

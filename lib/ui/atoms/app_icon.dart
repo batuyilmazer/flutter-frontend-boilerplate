@@ -39,4 +39,3 @@ class AppIcon extends StatelessWidget {
     );
   }
 }
-

@@ -10,11 +10,9 @@ import 'auth_api.dart';
 /// a clean interface for auth-related features. Handles token persistence,
 /// auto-login, and session management.
 class AuthRepository {
-  AuthRepository({
-    AuthApi? authApi,
-    SessionStorage? sessionStorage,
-  })  : _authApi = authApi ?? AuthApi(),
-        _sessionStorage = sessionStorage ?? SecureSessionStorage();
+  AuthRepository({AuthApi? authApi, SessionStorage? sessionStorage})
+    : _authApi = authApi ?? AuthApi(),
+      _sessionStorage = sessionStorage ?? SecureSessionStorage();
 
   final AuthApi _authApi;
   final SessionStorage _sessionStorage;
@@ -95,8 +93,7 @@ class AuthRepository {
 
       // Update stored tokens and keep or refresh user information.
       final existingUser = await _sessionStorage.getUser();
-      final user =
-          existingUser ?? await _authApi.getMe(response.accessToken);
+      final user = existingUser ?? await _authApi.getMe(response.accessToken);
 
       await _sessionStorage.saveSession(
         accessToken: response.accessToken,
@@ -213,10 +210,7 @@ class AuthRepository {
     }
 
     try {
-      await _authApi.sendTwoFa(
-        accessToken: accessToken,
-        scope: scope,
-      );
+      await _authApi.sendTwoFa(accessToken: accessToken, scope: scope);
     } catch (e) {
       if (e is ApiException) {
         throw AuthException(e.message);
@@ -304,4 +298,3 @@ class AuthRepository {
     }
   }
 }
-

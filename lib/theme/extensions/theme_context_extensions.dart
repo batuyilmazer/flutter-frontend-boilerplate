@@ -7,6 +7,8 @@ import '../color_schemes/app_color_scheme.dart';
 import '../typography_schemes/app_typography_scheme.dart';
 import '../spacing_schemes/app_spacing_scheme.dart';
 import '../radius_schemes/app_radius_scheme.dart';
+import '../size_schemes/app_size_scheme.dart';
+import '../shadow_schemes/app_shadow_scheme.dart';
 
 /// Convenient extensions on [BuildContext] for accessing theme-related data.
 ///
@@ -38,4 +40,10 @@ extension ThemeContextExtensions on BuildContext {
 
   /// App-specific radius tokens.
   AppRadiusScheme get appRadius => appTheme.radius;
+
+  /// App-specific component size tokens.
+  AppSizeScheme get appSizes => appTheme.sizes;
+
+  /// App-specific shadow / elevation tokens.
+  AppShadowScheme get appShadows => appTheme.shadows;
 }

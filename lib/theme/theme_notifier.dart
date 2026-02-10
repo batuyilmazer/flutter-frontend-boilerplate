@@ -19,6 +19,7 @@ class ThemeNotifier extends ChangeNotifier {
 
   final PreferencesStorage _preferencesStorage;
   ThemeMode _themeMode;
+  AppThemeData? _cachedThemeData;
   Future<void>? _initializationFuture;
 
   /// Current theme mode (light, dark, or system).
@@ -28,15 +29,13 @@ class ThemeNotifier extends ChangeNotifier {
   ///
   /// Returns light or dark theme data. System theme support can be added later.
   AppThemeData get currentThemeData {
-    switch (_themeMode) {
-      case ThemeMode.light:
-        return AppThemeData.light();
-      case ThemeMode.dark:
-        return AppThemeData.dark();
-      case ThemeMode.system:
+    return _cachedThemeData ??= switch (_themeMode) {
+      ThemeMode.light => AppThemeData.light(),
+      ThemeMode.dark => AppThemeData.dark(),
+      ThemeMode.system =>
         // For now, default to light. Can be enhanced to detect system theme.
-        return AppThemeData.light();
-    }
+        AppThemeData.light(),
+    };
   }
 
   /// Set theme mode and persist to storage.
@@ -47,6 +46,7 @@ class ThemeNotifier extends ChangeNotifier {
     if (_themeMode == mode) return;
 
     _themeMode = mode;
+    _cachedThemeData = null;
     await _saveThemePreference();
     notifyListeners();
   }
@@ -82,6 +82,7 @@ class ThemeNotifier extends ChangeNotifier {
       final mode = await _preferencesStorage.getThemeMode();
       if (mode != null && mode != _themeMode) {
         _themeMode = mode;
+        _cachedThemeData = null;
         notifyListeners();
       }
     } catch (e) {

@@ -50,13 +50,13 @@ class AppButton extends StatelessWidget {
           onPressed: onPressed,
           style: ElevatedButton.styleFrom(
             backgroundColor: colors.primary,
-            foregroundColor: Colors.white,
+            foregroundColor: colors.onPrimary,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(radius.medium),
+              borderRadius: BorderRadius.circular(radius.button),
             ),
             padding: EdgeInsets.symmetric(
-              horizontal: spacing.s24,
-              vertical: spacing.s12,
+              horizontal: spacing.buttonPaddingX,
+              vertical: spacing.buttonPaddingY,
             ),
           ),
           child: _buildContent(),
@@ -68,12 +68,12 @@ class AppButton extends StatelessWidget {
             backgroundColor: colors.surface,
             foregroundColor: colors.primary,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(radius.medium),
+              borderRadius: BorderRadius.circular(radius.button),
               side: BorderSide(color: colors.primary),
             ),
             padding: EdgeInsets.symmetric(
-              horizontal: spacing.s24,
-              vertical: spacing.s12,
+              horizontal: spacing.buttonPaddingX,
+              vertical: spacing.buttonPaddingY,
             ),
           ),
           child: _buildContent(),
@@ -85,11 +85,11 @@ class AppButton extends StatelessWidget {
             foregroundColor: colors.textPrimary,
             side: BorderSide(color: colors.textSecondary),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(radius.medium),
+              borderRadius: BorderRadius.circular(radius.button),
             ),
             padding: EdgeInsets.symmetric(
-              horizontal: spacing.s24,
-              vertical: spacing.s12,
+              horizontal: spacing.buttonPaddingX,
+              vertical: spacing.buttonPaddingY,
             ),
           ),
           child: _buildContent(),
@@ -99,6 +99,9 @@ class AppButton extends StatelessWidget {
           onPressed: onPressed,
           style: TextButton.styleFrom(
             foregroundColor: colors.primary,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(radius.button),
+            ),
             padding: EdgeInsets.symmetric(
               horizontal: spacing.s16,
               vertical: spacing.s8,
@@ -141,11 +144,11 @@ class AppButton extends StatelessWidget {
             ? colors.primary
             : colors.surface,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(radius.medium),
+          borderRadius: BorderRadius.circular(radius.button),
         ),
         padding: EdgeInsets.symmetric(
-          horizontal: spacing.s24,
-          vertical: spacing.s12,
+          horizontal: spacing.buttonPaddingX,
+          vertical: spacing.buttonPaddingY,
         ),
       ),
       child: SizedBox(
@@ -154,7 +157,9 @@ class AppButton extends StatelessWidget {
         child: CircularProgressIndicator(
           strokeWidth: 2,
           valueColor: AlwaysStoppedAnimation<Color>(
-            variant == AppButtonVariant.primary ? Colors.white : colors.primary,
+            variant == AppButtonVariant.primary
+                ? colors.onPrimary
+                : colors.primary,
           ),
         ),
       ),

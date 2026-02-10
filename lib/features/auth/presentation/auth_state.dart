@@ -30,4 +30,3 @@ class AuthErrorState extends AuthState {
   final String message;
   final Failure? failure;
 }
-

@@ -36,24 +36,28 @@ class ThemeBuilder {
         filled: true,
         fillColor: appTheme.colors.surface,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(appTheme.radius.medium),
-          borderSide: BorderSide(color: appTheme.colors.textSecondary),
+          borderRadius: BorderRadius.circular(appTheme.radius.input),
+          borderSide: BorderSide(color: appTheme.colors.border),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(appTheme.radius.medium),
-          borderSide: BorderSide(color: appTheme.colors.textSecondary),
+          borderRadius: BorderRadius.circular(appTheme.radius.input),
+          borderSide: BorderSide(color: appTheme.colors.border),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(appTheme.radius.medium),
+          borderRadius: BorderRadius.circular(appTheme.radius.input),
           borderSide: BorderSide(color: appTheme.colors.primary, width: 2),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(appTheme.radius.medium),
+          borderRadius: BorderRadius.circular(appTheme.radius.input),
           borderSide: BorderSide(color: appTheme.colors.error),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(appTheme.radius.medium),
+          borderRadius: BorderRadius.circular(appTheme.radius.input),
           borderSide: BorderSide(color: appTheme.colors.error, width: 2),
+        ),
+        disabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(appTheme.radius.input),
+          borderSide: BorderSide(color: appTheme.colors.disabled),
         ),
         labelStyle: appTheme.typography.bodySmall.copyWith(
           color: appTheme.colors.textSecondary,
@@ -65,8 +69,8 @@ class ThemeBuilder {
           color: appTheme.colors.error,
         ),
         contentPadding: EdgeInsets.symmetric(
-          horizontal: appTheme.spacing.s16,
-          vertical: appTheme.spacing.s12,
+          horizontal: appTheme.spacing.inputPaddingX,
+          vertical: appTheme.spacing.inputPaddingY,
         ),
       ),
 
@@ -84,28 +88,28 @@ class ThemeBuilder {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: appTheme.colors.primary,
-          foregroundColor: Colors.white,
+          foregroundColor: appTheme.colors.onPrimary,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(appTheme.radius.medium),
+            borderRadius: BorderRadius.circular(appTheme.radius.button),
           ),
           textStyle: appTheme.typography.button,
           padding: EdgeInsets.symmetric(
-            horizontal: appTheme.spacing.s24,
-            vertical: appTheme.spacing.s12,
+            horizontal: appTheme.spacing.buttonPaddingX,
+            vertical: appTheme.spacing.buttonPaddingY,
           ),
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: appTheme.colors.textPrimary,
-          side: BorderSide(color: appTheme.colors.textSecondary),
+          side: BorderSide(color: appTheme.colors.border),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(appTheme.radius.medium),
+            borderRadius: BorderRadius.circular(appTheme.radius.button),
           ),
           textStyle: appTheme.typography.button,
           padding: EdgeInsets.symmetric(
-            horizontal: appTheme.spacing.s24,
-            vertical: appTheme.spacing.s12,
+            horizontal: appTheme.spacing.buttonPaddingX,
+            vertical: appTheme.spacing.buttonPaddingY,
           ),
         ),
       ),
@@ -115,10 +119,8 @@ class ThemeBuilder {
         color: appTheme.colors.surface,
         elevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(appTheme.radius.medium),
-          side: BorderSide(
-            color: appTheme.colors.textSecondary.withValues(alpha: 0.1),
-          ),
+          borderRadius: BorderRadius.circular(appTheme.radius.card),
+          side: BorderSide(color: appTheme.colors.border),
         ),
         margin: EdgeInsets.all(appTheme.spacing.s8),
       ),
@@ -128,7 +130,7 @@ class ThemeBuilder {
         backgroundColor: appTheme.colors.surface,
         elevation: 8,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(appTheme.radius.large),
+          borderRadius: BorderRadius.circular(appTheme.radius.dialog),
         ),
         titleTextStyle: appTheme.typography.title.copyWith(
           color: appTheme.colors.textPrimary,
@@ -144,7 +146,7 @@ class ThemeBuilder {
         elevation: 8,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
-            top: Radius.circular(appTheme.radius.large),
+            top: Radius.circular(appTheme.radius.sheet),
           ),
         ),
       ),
@@ -160,7 +162,25 @@ class ThemeBuilder {
           vertical: appTheme.spacing.s8,
         ),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(appTheme.radius.medium),
+          borderRadius: BorderRadius.circular(appTheme.radius.chip),
+        ),
+      ),
+
+      // Checkbox theme
+      checkboxTheme: CheckboxThemeData(
+        fillColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.disabled)) {
+            return appTheme.colors.disabled;
+          }
+          if (states.contains(WidgetState.selected)) {
+            return appTheme.colors.primary;
+          }
+          return Colors.transparent;
+        }),
+        checkColor: WidgetStateProperty.all(Colors.white),
+        side: BorderSide(color: appTheme.colors.border, width: 1.5),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(appTheme.radius.checkbox),
         ),
       ),
 
@@ -180,11 +200,95 @@ class ThemeBuilder {
         }),
       ),
 
+      // Radio theme
+      radioTheme: RadioThemeData(
+        fillColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.disabled)) {
+            return appTheme.colors.disabled;
+          }
+          if (states.contains(WidgetState.selected)) {
+            return appTheme.colors.primary;
+          }
+          return appTheme.colors.textSecondary;
+        }),
+      ),
+
+      // Progress indicator theme
+      progressIndicatorTheme: ProgressIndicatorThemeData(
+        color: appTheme.colors.primary,
+        linearTrackColor: appTheme.colors.border,
+        circularTrackColor: appTheme.colors.border,
+      ),
+
+      // Tab bar theme
+      tabBarTheme: TabBarThemeData(
+        labelColor: appTheme.colors.primary,
+        unselectedLabelColor: appTheme.colors.textSecondary,
+        labelStyle: appTheme.typography.button,
+        unselectedLabelStyle: appTheme.typography.button,
+        indicatorColor: appTheme.colors.primary,
+        indicatorSize: TabBarIndicatorSize.tab,
+        dividerColor: appTheme.colors.divider,
+      ),
+
+      // Date picker theme
+      datePickerTheme: DatePickerThemeData(
+        backgroundColor: appTheme.colors.surface,
+        headerBackgroundColor: appTheme.colors.primary,
+        headerForegroundColor: appTheme.colors.onPrimary,
+        dayStyle: appTheme.typography.body,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(appTheme.radius.datePicker),
+        ),
+      ),
+
+      // Dropdown menu theme
+      dropdownMenuTheme: DropdownMenuThemeData(
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: appTheme.colors.surface,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(appTheme.radius.input),
+            borderSide: BorderSide(color: appTheme.colors.border),
+          ),
+        ),
+      ),
+
       // Divider theme
       dividerTheme: DividerThemeData(
-        color: appTheme.colors.textSecondary.withValues(alpha: 0.2),
+        color: appTheme.colors.divider,
         thickness: 1,
         space: 1,
+      ),
+
+      // Snackbar theme (for Toast)
+      snackBarTheme: SnackBarThemeData(
+        backgroundColor: appTheme.colors.surface,
+        contentTextStyle: appTheme.typography.body.copyWith(
+          color: appTheme.colors.textPrimary,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(appTheme.radius.toast),
+        ),
+        behavior: SnackBarBehavior.floating,
+        elevation: 4,
+      ),
+
+      // Drawer theme
+      drawerTheme: DrawerThemeData(
+        backgroundColor: appTheme.colors.surface,
+        elevation: 8,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.horizontal(right: Radius.circular(0)),
+        ),
+      ),
+
+      // Slider theme
+      sliderTheme: SliderThemeData(
+        activeTrackColor: appTheme.colors.primary,
+        inactiveTrackColor: appTheme.colors.border,
+        thumbColor: appTheme.colors.primary,
+        overlayColor: appTheme.colors.primary.withValues(alpha: 0.12),
       ),
 
       // Typography

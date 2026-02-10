@@ -12,23 +12,22 @@ import 'secure_storage.dart';
 /// secure storage mechanisms (Keychain on iOS, KeyStore on Android).
 class SecureStorageImpl implements SecureStorage {
   SecureStorageImpl({FlutterSecureStorage? storage})
-      : _storage = storage ??
-            // On mobile platforms, use secure storage plugins.
-            (defaultTargetPlatform == TargetPlatform.android ||
-                    defaultTargetPlatform == TargetPlatform.iOS
-                ? const FlutterSecureStorage(
-                    aOptions: AndroidOptions(
-                      encryptedSharedPreferences: true,
-                    ),
-                    iOptions: IOSOptions(
-                      accessibility:
-                          KeychainAccessibility.first_unlock_this_device,
-                    ),
-                  )
-                // On desktop/web (macOS, Windows, Linux, web), fall back to
-                // a simple file-based storage to avoid Keychain entitlements
-                // issues during local development.
-                : const FlutterSecureStorage());
+    : _storage =
+          storage ??
+          // On mobile platforms, use secure storage plugins.
+          (defaultTargetPlatform == TargetPlatform.android ||
+                  defaultTargetPlatform == TargetPlatform.iOS
+              ? const FlutterSecureStorage(
+                  aOptions: AndroidOptions(encryptedSharedPreferences: true),
+                  iOptions: IOSOptions(
+                    accessibility:
+                        KeychainAccessibility.first_unlock_this_device,
+                  ),
+                )
+              // On desktop/web (macOS, Windows, Linux, web), fall back to
+              // a simple file-based storage to avoid Keychain entitlements
+              // issues during local development.
+              : const FlutterSecureStorage());
 
   final FlutterSecureStorage _storage;
 

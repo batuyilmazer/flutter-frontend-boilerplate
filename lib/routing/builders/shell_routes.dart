@@ -41,6 +41,10 @@ class ShellRoutes {
   /// replaced by template consumers to fit their navigation needs.
   static List<ShellTabConfig> _buildShellTabs() => const [
     ShellTabConfig(label: 'Home', icon: Icons.home, path: AppRoutes.home),
-    ShellTabConfig(label: 'Profile', icon: Icons.person, path: AppRoutes.profile),
+    ShellTabConfig(
+      label: 'Profile',
+      icon: Icons.person,
+      path: AppRoutes.profile,
+    ),
   ];
 }

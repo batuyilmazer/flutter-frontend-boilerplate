@@ -37,11 +37,7 @@ class ShellTabConfig {
 /// Everything else (which tabs exist, which routes they map to, etc.)
 /// is decided by the routing layer and can be customized by template consumers.
 class MainShell extends StatelessWidget {
-  const MainShell({
-    super.key,
-    required this.child,
-    required this.tabs,
-  });
+  const MainShell({super.key, required this.child, required this.tabs});
 
   /// The active route content rendered in the scaffold body.
   final Widget child;
@@ -61,10 +57,7 @@ class MainShell extends StatelessWidget {
         currentIndex: currentIndex,
         items: [
           for (final tab in tabs)
-            BottomNavigationBarItem(
-              icon: Icon(tab.icon),
-              label: tab.label,
-            ),
+            BottomNavigationBarItem(icon: Icon(tab.icon), label: tab.label),
         ],
         onTap: (index) {
           final target = tabs[index];
@@ -92,4 +85,3 @@ class MainShell extends StatelessWidget {
     return 0;
   }
 }
-

@@ -28,4 +28,3 @@ abstract class SessionStorage {
   /// Clears all session-related data (tokens, device id, user).
   Future<void> clearSession();
 }
-

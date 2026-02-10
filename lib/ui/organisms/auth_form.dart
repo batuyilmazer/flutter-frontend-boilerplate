@@ -83,10 +83,7 @@ class _AuthFormState extends State<AuthForm> {
 
   void _handleSubmit() {
     if (_formKey.currentState!.validate()) {
-      widget.onSubmit(
-        _emailController.text.trim(),
-        _passwordController.text,
-      );
+      widget.onSubmit(_emailController.text.trim(), _passwordController.text);
     }
   }
 
@@ -165,4 +162,3 @@ class _AuthFormState extends State<AuthForm> {
     );
   }
 }
-

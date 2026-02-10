@@ -19,17 +19,15 @@ class AuthNotifierProvider extends ChangeNotifierProvider<AuthNotifier> {
     super.key,
     AuthRepository? authRepository,
     required super.child,
-  }) : super(
-          create: (_) => AuthNotifier(authRepository: authRepository),
-        );
+  }) : super(create: (_) => AuthNotifier(authRepository: authRepository));
 }
 
 /// Extension to easily access AuthNotifier from BuildContext.
 extension AuthNotifierExtension on BuildContext {
   /// Get AuthNotifier without listening to changes.
-  AuthNotifier get authNotifier => Provider.of<AuthNotifier>(this, listen: false);
-  
+  AuthNotifier get authNotifier =>
+      Provider.of<AuthNotifier>(this, listen: false);
+
   /// Watch AuthNotifier and rebuild when state changes.
   AuthNotifier watchAuthNotifier() => Provider.of<AuthNotifier>(this);
 }
-

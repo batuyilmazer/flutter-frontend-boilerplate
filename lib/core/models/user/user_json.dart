@@ -21,7 +21,11 @@ String parseEmail(Map<String, dynamic> json) {
   return rawEmail;
 }
 
-bool parseBool(Map<String, dynamic> json, String key, {bool defaultValue = false}) {
+bool parseBool(
+  Map<String, dynamic> json,
+  String key, {
+  bool defaultValue = false,
+}) {
   final v = json[key];
   if (v == null) return defaultValue;
   if (v is bool) return v;

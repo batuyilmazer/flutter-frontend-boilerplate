@@ -38,4 +38,3 @@ extension ResultX<T> on Result<T> {
     return success(requireData);
   }
 }
-

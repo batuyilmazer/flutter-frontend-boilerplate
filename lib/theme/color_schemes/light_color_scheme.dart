@@ -11,6 +11,9 @@ class LightColorScheme implements AppColorScheme {
   Color get primary => const Color(0xFF4F46E5);
 
   @override
+  Color get onPrimary => Colors.white;
+
+  @override
   Color get background => const Color(0xFFF9FAFB);
 
   @override
@@ -20,13 +23,46 @@ class LightColorScheme implements AppColorScheme {
   Color get textSecondary => const Color(0xFF6B7280);
 
   @override
+  Color get textDisabled => const Color(0xFF9CA3AF);
+
+  @override
   Color get error => const Color(0xFFEF4444);
 
   @override
   Color get success => const Color(0xFF10B981);
 
   @override
+  Color get warning => const Color(0xFFF59E0B);
+
+  @override
+  Color get info => const Color(0xFF3B82F6);
+
+  @override
   Color get surface => const Color(0xFFFFFFFF);
+
+  @override
+  Color get onSurface => textPrimary;
+
+  @override
+  Color get surfaceVariant => const Color(0xFFF3F4F6);
+
+  @override
+  Color get border => const Color(0xFFE5E7EB);
+
+  @override
+  Color get divider => border;
+
+  @override
+  Color get disabled => const Color(0xFFF3F4F6);
+
+  @override
+  Color get overlay => const Color(0x80000000);
+
+  @override
+  Color get iconSubtle => textSecondary;
+
+  @override
+  Color get iconStrong => textPrimary;
 
   @override
   ColorScheme get materialColorScheme =>
