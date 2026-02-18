@@ -101,6 +101,8 @@ lib/
     │   └── ... (organisms)
     ├── layout/
     │   └── main_shell.dart
+    ├── pages/
+    │   └── components_page.dart   # Tüm bileşenlerin interaktif showcase'i
     └── ui.dart                    # barrel export (atoms+molecules+organisms)
 ```
 
@@ -127,6 +129,16 @@ lib/
   - `context.appSizes`
   - `context.appShadows`
 - Varsayılan değerler token’lardan gelir, ancak çoğu bileşen `padding`, `color`, `radius` gibi override’lar alır.
+
+### Bileşen boyutlandırma
+
+Birçok bileşen `AppComponentSize` üzerinden boyut varyantları destekler:
+
+- **`AppButton`**: `size: AppComponentSize.sm/md/lg` parametresi `buttonHeightSm/Md/Lg` token’ları üzerinden buton yüksekliğini kontrol eder
+- **`AppTextField`** / **`AppTextarea`**: `size: AppComponentSize.sm/md/lg` parametresi `inputHeightSm/Md/Lg` token’ları üzerinden input yüksekliğini kontrol eder
+- **`AppTabs`**: `contentHeight: double?` parametresi tab içerik alanı için açık yükseklik belirler (scrollable context’lerde kullanışlı)
+
+`DefaultSizeScheme` içindeki size token’larını değiştirdiğinizde, bunları kullanan tüm bileşenler anında etkilenir.
 
 ### Barrel imports
 
@@ -181,7 +193,54 @@ AppBadge(
 );
 ```
 
-### Molecule örneği
+```dart
+// Boyut varyantları ile butonlar
+Row(
+  children: [
+    AppButton(
+      label: 'Küçük',
+      size: AppComponentSize.sm,
+      onPressed: () {},
+    ),
+    SizedBox(width: 8),
+    AppButton(
+      label: 'Orta',
+      size: AppComponentSize.md, // varsayılan
+      onPressed: () {},
+    ),
+    SizedBox(width: 8),
+    AppButton(
+      label: 'Büyük',
+      size: AppComponentSize.lg,
+      onPressed: () {},
+    ),
+  ],
+);
+
+// Tam genişlik buton
+AppButton(
+  label: 'Tam genişlik',
+  isFullWidth: true,
+  onPressed: () {},
+);
+```
+
+```dart
+// Boyut varyantları ile input'lar
+AppTextField(
+  label: 'Email',
+  hint: 'you@example.com',
+  size: AppComponentSize.md, // varsayılan
+);
+
+AppTextField(
+  label: 'Kompakt',
+  hint: 'Küçük input',
+  size: AppComponentSize.sm,
+);
+```
+
+### Molecule örnekleri
 
 ```dart
 AppSelect<String>(
@@ -193,6 +252,23 @@ AppSelect<String>(
   ],
   value: country,
   onChanged: (v) => setState(() => country = v),
+);
+```
+
+```dart
+// Açık içerik yüksekliği ile tab'lar (scrollable context'lerde kullanışlı)
+AppTabs(
+  contentHeight: 200,
+  tabs: [
+    AppTabItem(
+      label: 'Tab 1',
+      content: Text('İçerik 1'),
+    ),
+    AppTabItem(
+      label: 'Tab 2',
+      content: Text('İçerik 2'),
+    ),
+  ],
 );
 ```
 
@@ -238,6 +314,8 @@ await AppDialog.show(
      ```
 3. **Boyutlandırmayı standartlaştır**  
    - Uygunsa `AppComponentSize` ile small/medium/large varyantları ekleyin.
+   - Size token'larını bağlamak için `context.appSizes.buttonHeight(size)`, `inputHeight(size)` vb. kullanın.
+   - `AppTabs` gibi scrollable context'lerde açık yüksekliğe ihtiyaç duyan bileşenler için `contentHeight` parametresi ekleyin.
 4. **Barrel export’lara ekle**
    - Atom: `lib/ui/atoms/atoms.dart`
    - Molecule: `lib/ui/molecules/molecules.dart`
@@ -245,6 +323,18 @@ await AppDialog.show(
 5. **Format + analyze**
    - `dart format .`
    - `dart analyze`
+
+---
+
+## Components Showcase
+
+Proje, tüm atom ve molecule'leri tek bir yerde gösteren interaktif bir **Components Sayfası** (`lib/ui/pages/components_page.dart`) içerir. Alt navigasyon çubuğundaki "Components" sekmesinden erişilebilir (`RoutingMode.shell` kullanıldığında).
+
+Bu showcase şunlara yardımcı olur:
+- Tüm mevcut bileşenleri bir bakışta görmek
+- Bileşen etkileşimlerini test etmek (butonlar, switch'ler, toggle'lar, select'ler vb.)
+- Boyut varyantlarını (`sm`, `md`, `lg`) ve stilizasyonu doğrulamak
+- Bileşen kullanım desenlerini anlamak
 
 ---
 
@@ -256,7 +346,10 @@ await AppDialog.show(
 - **Import karmaşası**:
   - Derin path import’ları yerine `ui/ui.dart` ve `theme/theme.dart` kullanın.
 - **Overlay / layout sorunları**:
+  - `AppTabs` için scrollable context'lerde her zaman `contentHeight` sağlayın, layout hatalarını önlemek için.
   - Tabs/sheets/dialog gibi bileşenlerin doğru constraint içinde kullanıldığından emin olun (örn. `Expanded`, `SizedBox`).
+- **Buton genişlik sorunları**:
+  - `Row` içindeki butonlar "infinite width" hatası veriyorsa, `minimumSize`'ın `Size(0, height)` kullandığından, `Size.fromHeight(height)` kullanmadığından emin olun.
 
 ---
 
@@ -266,4 +359,6 @@ await AppDialog.show(
 - Theme extension’lar: `lib/theme/extensions/theme_context_extensions.dart`
 - UI barrel dosyaları: `lib/ui/ui.dart`, `lib/ui/atoms/atoms.dart`, `lib/ui/molecules/molecules.dart`, `lib/ui/organisms/organisms.dart`
 - Layout: `lib/ui/layout/main_shell.dart`
+- Components showcase: `lib/ui/pages/components_page.dart`
+- Size token'ları: `lib/theme/size_schemes/app_size_scheme.dart`
 

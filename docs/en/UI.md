@@ -101,6 +101,8 @@ lib/
     │   └── ... (organisms)
     ├── layout/
     │   └── main_shell.dart
+    ├── pages/
+    │   └── components_page.dart   # Interactive showcase of all components
     └── ui.dart                    # barrel export (atoms + molecules + organisms)
 ```
 
@@ -127,6 +129,16 @@ lib/
   - `context.appSizes`
   - `context.appShadows`
 - Defaults come from tokens, but most components accept overrides like `padding`, `color`, `radius`, etc.
+
+### Component sizing
+
+Many components support size variants via `AppComponentSize`:
+
+- **`AppButton`**: `size: AppComponentSize.sm/md/lg` controls button height via `buttonHeightSm/Md/Lg` tokens
+- **`AppTextField`** / **`AppTextarea`**: `size: AppComponentSize.sm/md/lg` controls input height via `inputHeightSm/Md/Lg` tokens
+- **`AppTabs`**: `contentHeight: double?` for explicit tab content area height (useful in scrollable contexts)
+
+Changing size tokens in `DefaultSizeScheme` immediately affects all components using them.
 
 ### Barrel imports
 
@@ -181,7 +193,54 @@ AppBadge(
 );
 ```
 
-### Molecule example
+```dart
+// Buttons with size variants
+Row(
+  children: [
+    AppButton(
+      label: 'Small',
+      size: AppComponentSize.sm,
+      onPressed: () {},
+    ),
+    SizedBox(width: 8),
+    AppButton(
+      label: 'Medium',
+      size: AppComponentSize.md, // default
+      onPressed: () {},
+    ),
+    SizedBox(width: 8),
+    AppButton(
+      label: 'Large',
+      size: AppComponentSize.lg,
+      onPressed: () {},
+    ),
+  ],
+);
+
+// Full-width button
+AppButton(
+  label: 'Full width',
+  isFullWidth: true,
+  onPressed: () {},
+);
+```
+
+```dart
+// Inputs with size variants
+AppTextField(
+  label: 'Email',
+  hint: 'you@example.com',
+  size: AppComponentSize.md, // default
+);
+
+AppTextField(
+  label: 'Compact',
+  hint: 'Small input',
+  size: AppComponentSize.sm,
+);
+```
+
+### Molecule examples
 
 ```dart
 AppSelect<String>(
@@ -193,6 +252,23 @@ AppSelect<String>(
   ],
   value: country,
   onChanged: (v) => setState(() => country = v),
+);
+```
+
+```dart
+// Tabs with explicit content height (useful in scrollable contexts)
+AppTabs(
+  contentHeight: 200,
+  tabs: [
+    AppTabItem(
+      label: 'Tab 1',
+      content: Text('Content 1'),
+    ),
+    AppTabItem(
+      label: 'Tab 2',
+      content: Text('Content 2'),
+    ),
+  ],
 );
 ```
 
@@ -238,6 +314,8 @@ await AppDialog.show(
      ```
 3. **Standardize sizing**  
    - When it makes sense, add small/medium/large variants via `AppComponentSize`.
+   - Use `context.appSizes.buttonHeight(size)`, `inputHeight(size)`, etc. to wire size tokens.
+   - For components like `AppTabs` that need explicit height in scrollable contexts, add a `contentHeight` parameter.
 4. **Add to barrel exports**
    - Atom: `lib/ui/atoms/atoms.dart`
    - Molecule: `lib/ui/molecules/molecules.dart`
@@ -245,6 +323,18 @@ await AppDialog.show(
 5. **Format + analyze**
    - `dart format .`
    - `dart analyze`
+
+---
+
+## Components Showcase
+
+The project includes an interactive **Components Page** (`lib/ui/pages/components_page.dart`) that demonstrates all atoms and molecules in one place. Access it via the bottom navigation bar's "Components" tab (when using `RoutingMode.shell`).
+
+This showcase helps you:
+- See all available components at a glance
+- Test component interactions (buttons, switches, toggles, selects, etc.)
+- Verify size variants (`sm`, `md`, `lg`) and styling
+- Understand component usage patterns
 
 ---
 
@@ -256,7 +346,10 @@ await AppDialog.show(
 - **Import noise**:
   - Prefer `ui/ui.dart` and `theme/theme.dart` instead of deep path imports.
 - **Overlay / layout issues**:
+  - For `AppTabs` in scrollable contexts, always provide `contentHeight` to avoid layout errors.
   - Make sure tabs/sheets/dialogs are used inside proper constraints (`Expanded`, `SizedBox`, etc.).
+- **Button width issues**:
+  - If buttons in `Row` cause "infinite width" errors, ensure `minimumSize` uses `Size(0, height)` not `Size.fromHeight(height)`.
 
 ---
 
@@ -264,6 +357,8 @@ await AppDialog.show(
 
 - Theme tokens: `lib/theme/theme_data.dart`
 - Theme extensions: `lib/theme/extensions/theme_context_extensions.dart`
+- Size tokens: `lib/theme/size_schemes/app_size_scheme.dart`
 - UI barrel files: `lib/ui/ui.dart`, `lib/ui/atoms/atoms.dart`, `lib/ui/molecules/molecules.dart`, `lib/ui/organisms/organisms.dart`
 - Layout: `lib/ui/layout/main_shell.dart`
+- Components showcase: `lib/ui/pages/components_page.dart`
 

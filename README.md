@@ -8,10 +8,10 @@ Production-ready Flutter application boilerplate with clean architecture, authen
 - **Authentication**: Full auth flow with JWT, refresh tokens, session restore, and guards.
 - **State management**: Provider + `ChangeNotifier` (`AuthNotifier`, `ThemeNotifier`).
 - **Routing**: GoRouter with auth guards and optional shell layout.
-- **Theme system**: Design tokens (colors, typography, spacing, radius, sizes, shadows), light/dark mode, ThemeNotifier.
+- **Theme system**: Minimal, semantic design tokens (colors, typography, spacing, radius, sizes, shadows), shadcn-inspired design language, light/dark mode, ThemeNotifier.
 - **Error handling**: Typed exception/failure pipeline with `Result<T>`.
 - **Storage layer**: Modular secure storage for session and preferences.
-- **UI components**: Atomic design (atoms, molecules, organisms) and reusable shell layout.
+- **UI components**: Atomic design (atoms, molecules, organisms) with size variants (`AppComponentSize.sm/md/lg`), reusable shell layout, and interactive Components showcase page.
 - **Network layer**: Centralized API client with auth interceptor.
 
 ---
@@ -216,8 +216,13 @@ lib/
 ├── core/               # Shared infrastructure (config, errors, models, network, storage)
 ├── features/           # Feature modules (auth, profile, etc.)
 ├── routing/            # GoRouter setup and route definitions
-├── theme/              # Theme data, notifier, design tokens
-└── ui/                 # Reusable UI components (atoms/molecules/organisms/layout)
+├── theme/              # Theme data, notifier, design tokens (minimal, semantic)
+└── ui/                 # Reusable UI components
+    ├── atoms/          # Basic widgets (AppButton, AppTextField, AppCard, etc.)
+    ├── molecules/      # Composed widgets (AppSelect, AppTabs, AppPagination, etc.)
+    ├── organisms/      # Complex overlays (AppDialog, AppSheet, AppToast, etc.)
+    ├── layout/         # Shell layouts (MainShell with bottom navigation)
+    └── pages/          # Full page widgets (ComponentsPage showcase)
 ```
 
 ---
