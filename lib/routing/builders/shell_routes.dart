@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../features/profile/presentation/home_screen.dart';
 import '../../features/profile/presentation/profile_screen.dart';
 import '../../ui/layout/main_shell.dart';
+import '../../ui/pages/components_page.dart';
 import '../route_paths.dart';
 
 /// Route definitions for the shell-based layout (e.g. bottom navigation).
@@ -31,6 +32,11 @@ class ShellRoutes {
           name: 'profile',
           builder: (context, state) => const ProfileScreen(),
         ),
+        GoRoute(
+          path: AppRoutes.components,
+          name: 'components',
+          builder: (context, state) => const ComponentsPage(),
+        ),
       ],
     ),
   ];
@@ -45,6 +51,11 @@ class ShellRoutes {
       label: 'Profile',
       icon: Icons.person,
       path: AppRoutes.profile,
+    ),
+    ShellTabConfig(
+      label: 'Components',
+      icon: Icons.widgets,
+      path: AppRoutes.components,
     ),
   ];
 }

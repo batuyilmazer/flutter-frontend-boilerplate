@@ -11,22 +11,22 @@ void main() {
       final theme = AppThemeData.light();
 
       expect(theme.colors, isA<LightColorScheme>());
-      expect(theme.colors.primary, const Color(0xFF4F46E5));
-      expect(theme.colors.background, const Color(0xFFF9FAFB));
+      expect(theme.colors.primary, const Color(0xFF18181B));
+      expect(theme.colors.background, const Color(0xFFFFFFFF));
       expect(theme.typography.headline.fontSize, 24);
       expect(theme.spacing.s4, 4);
-      expect(theme.radius.small, 4);
+      expect(theme.radius.small, 6);
     });
 
     test('dark() factory creates dark theme with correct schemes', () {
       final theme = AppThemeData.dark();
 
       expect(theme.colors, isA<DarkColorScheme>());
-      expect(theme.colors.background, const Color(0xFF111827));
-      expect(theme.colors.textPrimary, const Color(0xFFF9FAFB));
+      expect(theme.colors.background, const Color(0xFF09090B));
+      expect(theme.colors.textPrimary, const Color(0xFFFAFAFA));
       expect(theme.typography.headline.fontSize, 24);
       expect(theme.spacing.s4, 4);
-      expect(theme.radius.small, 4);
+      expect(theme.radius.small, 6);
     });
 
     test('copyWith creates new instance with updated values', () {

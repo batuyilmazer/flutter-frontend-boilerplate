@@ -68,7 +68,9 @@ flowchart TB
   AppThemeData --> AppSizeScheme
   AppThemeData --> AppShadowScheme
 
-  AppThemeData -->|toThemeData()| ThemeBuilder --> ThemeData --> MaterialApp
+  AppThemeData --> ThemeBuilder
+  ThemeBuilder --> ThemeData
+  ThemeData --> MaterialApp
   MaterialApp --> ContextExt --> UIWidgets
 ```
 
@@ -120,33 +122,32 @@ Light/Dark implementasyonları:
 
 Spacing token’ları ikiye ayrılır:
 
-- **Primitif ölçek** (4px grid): `s0, s2, s4, s6, s8, s12, s16, s20, s24, s32, s40, s48, s64`
+- **Primitif ölçek** (4px grid): `s0, s2, s4, s6, s8, s12, s16, s24, s32`
 - **Semantik (bileşen-seviye) token’lar**: primitif ölçeğe referans veren bileşen varsayılanlarıdır. Böylece sadece belirli bir bileşenin spacing’ini değiştirip diğerlerini etkilemezsiniz.
 
 Semantik spacing token’ları (mevcut default’lar):
-- `buttonPaddingX` (default: 24), `buttonPaddingY` (default: 12), `buttonIconGap` (default: 8)
-- `inputPaddingX` (default: 16), `inputPaddingY` (default: 12), `inputLabelGap` (default: 6)
-- `cardPadding` (default: 16), `cardGap` (default: 8)
-- `dialogPadding` (default: 24), `dialogActionsGap` (default: 8)
+- `buttonPaddingX` (default: 16), `buttonPaddingY` (default: 10), `buttonIconGap` (default: 8)
+- `inputPaddingX` (default: 12), `inputPaddingY` (default: 10)
+- `cardPadding` (default: 16)
+- `dialogPadding` (default: 24)
 - `sheetPadding` (default: 16)
-- `toastMargin` (default: 16), `toastPaddingX` (default: 16), `toastPaddingY` (default: 12)
+- `toastPaddingX` (default: 16), `toastPaddingY` (default: 12)
 - `badgePaddingX` (default: 6), `badgePaddingY` (default: 2)
-- `chipPaddingX` (default: 12), `chipPaddingY` (default: 8)
 - `sectionGapSm` (default: 8), `sectionGapMd` (default: 16), `sectionGapLg` (default: 24)
 
 ### Radius (`AppRadiusScheme`)
 
-Radius token’ları ikiye ayrılır:
+Radius token’ları sade ve semantik tutulur:
 
-- **Primitif token’lar**: `none, small, medium, large, xl, full`
-- **Semantik (bileşen-seviye) token’lar**: primitiflere referans veren bileşen varsayılanlarıdır. Böylece sadece *tek bir* bileşen tipini özelleştirip diğerlerini etkilemezsiniz.
+- **Primitive-benzeri yardımcılar**: `small` (bazı bileşenler için), `full` (pill/circle)
+- **Semantik (bileşen-seviye) token’lar**: bileşen varsayılanlarıdır ve birbirinden bağımsız özelleştirilebilir.
 
 Semantik radius token’ları (mevcut default’lar):
 - `button` (default: 8)
 - `card` (default: 8)
 - `input` (default: 8)
-- `dialog` (default: 16)
-- `sheet` (default: 16)
+- `dialog` (default: 12)
+- `sheet` (default: 12)
 - `badge` (default: 9999)
 - `alert` (default: 8)
 - `chip` (default: 8)
@@ -157,44 +158,31 @@ Semantik radius token’ları (mevcut default’lar):
 - `toggle` (default: 8)
 - `pagination` (default: 8)
 - `avatar` (default: 8)
-- `indicator` (default: 4)
-- `checkbox` (default: 4)
-- `datePicker` (default: 16)
-
-#### Sadece buton radius’unu değiştirmek
-
-`lib/theme/radius_schemes/app_radius_scheme.dart` içindeki `DefaultRadiusScheme` üzerinde sadece `button:` değerini değiştirin. UI bileşenleri ve `ThemeBuilder` semantik token’ları kullandığı için (örn. `radius.button`, `radius.input`) diğer bileşenlerin radius’u etkilenmez.
-
-```dart
-class DefaultRadiusScheme extends AppRadiusScheme {
-  const DefaultRadiusScheme()
-    : super(
-        // ...
-        button: 12, // Sadece butonlar daha yuvarlak olur
-        // ...
-      );
-}
-```
+- `indicator` (default: 6)
+- `checkbox` (default: 6)
+- `datePicker` (default: 12)
 
 ### Sizes (`AppSizeScheme`)
 
 Icon/button/input/avatar gibi component ölçüleri:
-- `AppComponentSize.sm/md/lg`
+
+- `AppComponentSize.sm/md/lg` helper’ları:
+  - `iconSize(size)`
+  - `buttonHeight(size)`
+  - `inputHeight(size)`
+  - `avatarSize(size)`
+
+Bu helper’lar, özellikle atom seviyesindeki bileşenler (`AppButton`, `AppTextField`, `AppTextarea`, avatar bileşenleri) tarafından kullanılır. `DefaultSizeScheme` içindeki `buttonHeightSm/Md/Lg` veya `inputHeightSm/Md/Lg` değerlerini değiştirdiğinizde, ilgili tüm bileşenlerin yüksekliği tek yerden değişir.
 
 ### Shadows (`AppShadowScheme`)
 
-Shadow token’ları ikiye ayrılır:
+Shadow sistemi bilinçli olarak minimaldir:
 
-- **Primitif token’lar**: `none, sm, md, lg`
-- **Semantik (bileşen-seviye) token’lar**: `popover`, `toast`, `contextMenu` gibi bileşen varsayılanlarıdır (primitiflere map edilir).
+- `none`: gölge yok (düz yüzeyler)
+- `popover`: popover benzeri yüzeyler ve overlay’ler
+- `toggleSelected`: seçili toggle item’lar için hafif vurgu
 
-Semantik shadow token’ları (mevcut default’lar):
-- `card` (default: none)
-- `popover` (default: md)
-- `toast` (default: md)
-- `contextMenu` (default: md)
-- `elevatedButton` (default: sm)
-- `toggleSelected` (default: sm)
+Tek bir `BoxShadow` değerini `List<BoxShadow>`’a çevirmek için `context.appShadows.list(token)` kullanabilirsiniz.
 
 ---
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../theme/extensions/theme_context_extensions.dart';
+import '../../theme/size_schemes/app_size_scheme.dart';
 
 /// A themed multi-line text input.
 ///
@@ -29,6 +30,7 @@ class AppTextarea extends StatelessWidget {
     this.enabled = true,
     this.isRequired = false,
     this.showCounter = false,
+    this.size = AppComponentSize.md,
   });
 
   /// Text editing controller.
@@ -66,6 +68,8 @@ class AppTextarea extends StatelessWidget {
 
   /// Whether to show the character counter.
   final bool showCounter;
+  /// Semantic size for the textarea (sm, md, lg).
+  final AppComponentSize size;
 
   @override
   Widget build(BuildContext context) {
@@ -73,36 +77,45 @@ class AppTextarea extends StatelessWidget {
     final spacing = context.appSpacing;
     final radius = context.appRadius;
     final typography = context.appTypography;
+    final sizes = context.appSizes;
 
-    final field = TextFormField(
-      controller: controller,
-      initialValue: controller == null ? initialValue : null,
-      onChanged: onChanged,
-      validator: validator,
-      enabled: enabled,
-      minLines: minLines,
-      maxLines: maxLines,
-      maxLength: maxLength,
-      style: typography.body.copyWith(color: colors.textPrimary),
-      decoration: InputDecoration(
-        hintText: hint,
-        hintStyle: typography.body.copyWith(color: colors.textSecondary),
-        filled: true,
-        fillColor: enabled ? colors.surface : colors.disabled,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(radius.input),
-          borderSide: BorderSide(color: colors.border),
+    final minHeight = sizes.inputHeight(size);
+
+    final field = ConstrainedBox(
+      constraints: BoxConstraints(minHeight: minHeight),
+      child: TextFormField(
+        controller: controller,
+        initialValue: controller == null ? initialValue : null,
+        onChanged: onChanged,
+        validator: validator,
+        enabled: enabled,
+        minLines: minLines,
+        maxLines: maxLines,
+        maxLength: maxLength,
+        style: typography.body.copyWith(color: colors.textPrimary),
+        decoration: InputDecoration(
+          hintText: hint,
+          hintStyle: typography.body.copyWith(color: colors.textSecondary),
+          filled: true,
+          fillColor: enabled ? colors.surface : colors.disabled,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(radius.input),
+            borderSide: BorderSide(color: colors.border),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(radius.input),
+            borderSide: BorderSide(color: colors.border),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(radius.input),
+            borderSide: BorderSide(color: colors.primary, width: 2),
+          ),
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: spacing.inputPaddingX,
+            vertical: spacing.inputPaddingY,
+          ),
+          counterText: showCounter ? null : '',
         ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(radius.input),
-          borderSide: BorderSide(color: colors.border),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(radius.input),
-          borderSide: BorderSide(color: colors.primary, width: 2),
-        ),
-        contentPadding: EdgeInsets.all(spacing.s12),
-        counterText: showCounter ? null : '',
       ),
     );
 

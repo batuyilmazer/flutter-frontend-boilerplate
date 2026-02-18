@@ -51,8 +51,8 @@ void main() {
       await notifier.setThemeMode(ThemeMode.light);
       final themeData = notifier.currentThemeData;
 
-      expect(themeData.colors.primary, const Color(0xFF4F46E5));
-      expect(themeData.colors.background, const Color(0xFFF9FAFB));
+      expect(themeData.colors.primary, const Color(0xFF18181B));
+      expect(themeData.colors.background, const Color(0xFFFFFFFF));
     });
 
     test('setThemeMode updates theme mode', () async {
@@ -184,8 +184,8 @@ void main() {
       await notifier.setThemeMode(ThemeMode.dark);
       final themeData = notifier.currentThemeData;
 
-      expect(themeData.colors.background, const Color(0xFF111827));
-      expect(themeData.colors.textPrimary, const Color(0xFFF9FAFB));
+      expect(themeData.colors.background, const Color(0xFF09090B));
+      expect(themeData.colors.textPrimary, const Color(0xFFFAFAFA));
     });
 
     test('currentThemeData returns light theme for system mode', () async {
@@ -195,7 +195,7 @@ void main() {
       // Set to system mode
       await notifier.setThemeMode(ThemeMode.system);
       final themeData = notifier.currentThemeData;
-      expect(themeData.colors.background, const Color(0xFFF9FAFB));
+      expect(themeData.colors.background, const Color(0xFFFFFFFF));
     });
   });
 }

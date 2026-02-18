@@ -78,9 +78,6 @@ class AppSelect<T> extends StatelessWidget {
     final spacing = context.appSpacing;
     final radius = context.appRadius;
     final typography = context.appTypography;
-    final sizes = context.appSizes;
-
-    final inputHeight = sizes.inputHeight(size);
 
     final textStyle = switch (size) {
       AppComponentSize.sm => typography.bodySmall,
@@ -100,8 +97,8 @@ class AppSelect<T> extends StatelessWidget {
       style: textStyle.copyWith(color: colors.textPrimary),
       decoration: InputDecoration(
         contentPadding: EdgeInsets.symmetric(
-          horizontal: spacing.s12,
-          vertical: (inputHeight - textStyle.fontSize! - 8) / 2,
+          horizontal: spacing.inputPaddingX,
+          vertical: spacing.inputPaddingY,
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radius.input),
@@ -116,7 +113,7 @@ class AppSelect<T> extends StatelessWidget {
           borderSide: BorderSide(color: colors.primary, width: 2),
         ),
         filled: true,
-        fillColor: colors.surface,
+        fillColor: enabled ? colors.surface : colors.disabled,
       ),
       items: items.map((item) {
         return DropdownMenuItem<T>(

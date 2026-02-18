@@ -8,28 +8,28 @@ class LightColorScheme implements AppColorScheme {
   const LightColorScheme();
 
   @override
-  Color get primary => const Color(0xFF4F46E5);
+  Color get primary => const Color(0xFF18181B);
 
   @override
   Color get onPrimary => Colors.white;
 
   @override
-  Color get background => const Color(0xFFF9FAFB);
+  Color get background => const Color(0xFFFFFFFF);
 
   @override
-  Color get textPrimary => const Color(0xFF111827);
+  Color get textPrimary => const Color(0xFF09090B);
 
   @override
-  Color get textSecondary => const Color(0xFF6B7280);
+  Color get textSecondary => const Color(0xFF71717A);
 
   @override
-  Color get textDisabled => const Color(0xFF9CA3AF);
+  Color get textDisabled => const Color(0xFFA1A1AA);
 
   @override
   Color get error => const Color(0xFFEF4444);
 
   @override
-  Color get success => const Color(0xFF10B981);
+  Color get success => const Color(0xFF22C55E);
 
   @override
   Color get warning => const Color(0xFFF59E0B);
@@ -44,16 +44,16 @@ class LightColorScheme implements AppColorScheme {
   Color get onSurface => textPrimary;
 
   @override
-  Color get surfaceVariant => const Color(0xFFF3F4F6);
+  Color get surfaceVariant => const Color(0xFFF4F4F5);
 
   @override
-  Color get border => const Color(0xFFE5E7EB);
+  Color get border => const Color(0xFFE4E4E7);
 
   @override
   Color get divider => border;
 
   @override
-  Color get disabled => const Color(0xFFF3F4F6);
+  Color get disabled => const Color(0xFFF4F4F5);
 
   @override
   Color get overlay => const Color(0x80000000);

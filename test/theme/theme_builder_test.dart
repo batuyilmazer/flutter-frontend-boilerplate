@@ -109,8 +109,8 @@ void main() {
         final inputPadding = themeData.inputDecorationTheme.contentPadding;
         expect(inputPadding, isNotNull);
         if (inputPadding is EdgeInsets) {
-          expect(inputPadding.horizontal, appTheme.spacing.s16 * 2);
-          expect(inputPadding.vertical, appTheme.spacing.s12 * 2);
+          expect(inputPadding.horizontal, appTheme.spacing.inputPaddingX * 2);
+          expect(inputPadding.vertical, appTheme.spacing.inputPaddingY * 2);
         }
 
         // Check button padding

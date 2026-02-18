@@ -26,24 +26,15 @@ class AppToast {
     final radius = context.appRadius;
     final typography = context.appTypography;
 
-    final bgColor = switch (variant) {
-      AppToastVariant.success => colors.success,
-      AppToastVariant.error => colors.error,
-      AppToastVariant.warning => colors.warning,
-      AppToastVariant.info => colors.info,
+    final (accentColor, icon) = switch (variant) {
+      AppToastVariant.success => (colors.success, Icons.check_circle_outline),
+      AppToastVariant.error => (colors.error, Icons.error_outline),
+      AppToastVariant.warning => (colors.warning, Icons.warning_amber_outlined),
+      AppToastVariant.info => (colors.info, Icons.info_outline),
     };
 
-    final fgColor = switch (variant) {
-      AppToastVariant.warning => colors.textPrimary,
-      _ => colors.onPrimary,
-    };
-
-    final icon = switch (variant) {
-      AppToastVariant.success => Icons.check_circle_outline,
-      AppToastVariant.error => Icons.error_outline,
-      AppToastVariant.warning => Icons.warning_amber_outlined,
-      AppToastVariant.info => Icons.info_outline,
-    };
+    final bgColor = colors.surface;
+    final fgColor = colors.textPrimary;
 
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
@@ -54,6 +45,7 @@ class AppToast {
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(radius.toast),
+            side: BorderSide(color: colors.border),
           ),
           margin: EdgeInsets.all(spacing.s16),
           padding: EdgeInsets.symmetric(
@@ -62,7 +54,7 @@ class AppToast {
           ),
           content: Row(
             children: [
-              Icon(icon, color: fgColor, size: 20),
+              Icon(icon, color: accentColor, size: 20),
               SizedBox(width: spacing.s8),
               Expanded(
                 child: Text(
@@ -75,7 +67,7 @@ class AppToast {
           action: actionLabel != null
               ? SnackBarAction(
                   label: actionLabel,
-                  textColor: fgColor,
+                  textColor: colors.primary,
                   onPressed: onAction ?? () {},
                 )
               : null,

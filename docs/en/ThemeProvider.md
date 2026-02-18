@@ -68,7 +68,9 @@ flowchart TB
   AppThemeData --> AppSizeScheme
   AppThemeData --> AppShadowScheme
 
-  AppThemeData -->|toThemeData()| ThemeBuilder --> ThemeData --> MaterialApp
+  AppThemeData --> ThemeBuilder
+  ThemeBuilder --> ThemeData
+  ThemeData --> MaterialApp
   MaterialApp --> ContextExt --> UIWidgets
 ```
 
@@ -125,33 +127,32 @@ Text styles:
 
 Spacing tokens are split into:
 
-- **Primitive scale** (4px grid): `s0, s2, s4, s6, s8, s12, s16, s20, s24, s32, s40, s48, s64`
+- **Primitive scale** (4px grid): `s0, s2, s4, s6, s8, s12, s16, s24, s32`
 - **Semantic (component-level) tokens**: component defaults that reference the primitive scale, so you can customize spacing for one component type without affecting others.
 
 Semantic spacing tokens (current defaults):
-- `buttonPaddingX` (default: 24), `buttonPaddingY` (default: 12), `buttonIconGap` (default: 8)
-- `inputPaddingX` (default: 16), `inputPaddingY` (default: 12), `inputLabelGap` (default: 6)
-- `cardPadding` (default: 16), `cardGap` (default: 8)
-- `dialogPadding` (default: 24), `dialogActionsGap` (default: 8)
+- `buttonPaddingX` (default: 16), `buttonPaddingY` (default: 10), `buttonIconGap` (default: 8)
+- `inputPaddingX` (default: 12), `inputPaddingY` (default: 10)
+- `cardPadding` (default: 16)
+- `dialogPadding` (default: 24)
 - `sheetPadding` (default: 16)
-- `toastMargin` (default: 16), `toastPaddingX` (default: 16), `toastPaddingY` (default: 12)
+- `toastPaddingX` (default: 16), `toastPaddingY` (default: 12)
 - `badgePaddingX` (default: 6), `badgePaddingY` (default: 2)
-- `chipPaddingX` (default: 12), `chipPaddingY` (default: 8)
 - `sectionGapSm` (default: 8), `sectionGapMd` (default: 16), `sectionGapLg` (default: 24)
 
 ### Radius (`AppRadiusScheme`)
 
-Radius tokens are split into:
+Radius tokens are kept intentionally small and semantic:
 
-- **Primitive tokens**: `none, small, medium, large, xl, full`
-- **Semantic (component-level) tokens**: component defaults that reference primitives, so you can customize *one* component type without affecting others.
+- **Primitive-like helpers**: `small` (used by a few components), `full` (pill/circle)
+- **Semantic (component-level) tokens**: component defaults that can diverge from each other without duplicating primitives.
 
 Semantic radius tokens (current defaults):
 - `button` (default: 8)
 - `card` (default: 8)
 - `input` (default: 8)
-- `dialog` (default: 16)
-- `sheet` (default: 16)
+- `dialog` (default: 12)
+- `sheet` (default: 12)
 - `badge` (default: 9999)
 - `alert` (default: 8)
 - `chip` (default: 8)
@@ -162,44 +163,31 @@ Semantic radius tokens (current defaults):
 - `toggle` (default: 8)
 - `pagination` (default: 8)
 - `avatar` (default: 8)
-- `indicator` (default: 4)
-- `checkbox` (default: 4)
-- `datePicker` (default: 16)
-
-#### Customizing only button radius
-
-Update `DefaultRadiusScheme` in `lib/theme/radius_schemes/app_radius_scheme.dart` and change only `button:`. Because UI components and `ThemeBuilder` use semantic tokens (e.g. `radius.button`, `radius.input`), other components keep their own radius defaults.
-
-```dart
-class DefaultRadiusScheme extends AppRadiusScheme {
-  const DefaultRadiusScheme()
-    : super(
-        // ...
-        button: 12, // Only buttons become more rounded
-        // ...
-      );
-}
-```
+- `indicator` (default: 6)
+- `checkbox` (default: 6)
+- `datePicker` (default: 12)
 
 ### Sizes (`AppSizeScheme`)
 
 Component-level dimensions (icons/buttons/inputs/avatars) resolved via:
-- `AppComponentSize.sm/md/lg`
+
+- `AppComponentSize.sm/md/lg` helpers:
+  - `iconSize(size)`
+  - `buttonHeight(size)`
+  - `inputHeight(size)`
+  - `avatarSize(size)`
+
+These are consumed by atoms (e.g. `AppButton`, `AppTextField`, `AppTextarea`, avatar components) so that changing `buttonHeightSm/Md/Lg` or `inputHeightSm/Md/Lg` in `DefaultSizeScheme` immediately affects all relevant components.
 
 ### Shadows (`AppShadowScheme`)
 
-Shadow tokens are split into:
+The shadow system is minimal by design:
 
-- **Primitive tokens**: `none, sm, md, lg`
-- **Semantic (component-level) tokens**: defaults like `popover`, `toast`, `contextMenu`, etc. mapped to primitives.
+- `none`: no shadow (flat surfaces)
+- `popover`: used for popover-like surfaces and overlays
+- `toggleSelected`: subtle emphasis for selected toggle items
 
-Semantic shadow tokens (current defaults):
-- `card` (default: none)
-- `popover` (default: md)
-- `toast` (default: md)
-- `contextMenu` (default: md)
-- `elevatedButton` (default: sm)
-- `toggleSelected` (default: sm)
+Use `context.appShadows.list(token)` to convert a single shadow into a `List<BoxShadow>` when needed.
 
 ---
 

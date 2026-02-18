@@ -37,14 +37,15 @@ class AppSheet {
       barrierColor: colors.overlay,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(radius.sheet)),
+        side: BorderSide(color: colors.border),
       ),
       builder: (ctx) {
         Widget content = Padding(
           padding: EdgeInsets.fromLTRB(
-            spacing.s16,
-            showDragHandle ? spacing.s0 : spacing.s16,
-            spacing.s16,
-            spacing.s16,
+            spacing.sheetPadding,
+            showDragHandle ? spacing.s0 : spacing.sheetPadding,
+            spacing.sheetPadding,
+            spacing.sheetPadding,
           ),
           child: child,
         );

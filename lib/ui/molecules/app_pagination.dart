@@ -77,7 +77,7 @@ class AppPagination extends StatelessWidget {
                 fontWeight: i == currentPage
                     ? FontWeight.w600
                     : FontWeight.normal,
-                color: i == currentPage ? colors.onPrimary : colors.textPrimary,
+                color: colors.textPrimary,
               ),
             ),
           ),
@@ -135,9 +135,9 @@ class _PaginationButton extends StatelessWidget {
         alignment: Alignment.center,
         padding: EdgeInsets.symmetric(horizontal: appSpacing.s8),
         decoration: BoxDecoration(
-          color: isActive ? appColors.primary : Colors.transparent,
+          color: isActive ? appColors.surfaceVariant : Colors.transparent,
           borderRadius: BorderRadius.circular(appRadius.pagination),
-          border: isActive ? null : Border.all(color: appColors.border),
+          border: Border.all(color: appColors.border),
         ),
         child: child,
       ),

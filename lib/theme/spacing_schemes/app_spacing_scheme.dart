@@ -12,12 +12,8 @@ class AppSpacingScheme {
     required this.s8,
     required this.s12,
     required this.s16,
-    required this.s20,
     required this.s24,
     required this.s32,
-    required this.s40,
-    required this.s48,
-    required this.s64,
 
     // Semantic / component-level spacing tokens
     required this.buttonPaddingX,
@@ -25,19 +21,13 @@ class AppSpacingScheme {
     required this.buttonIconGap,
     required this.inputPaddingX,
     required this.inputPaddingY,
-    required this.inputLabelGap,
     required this.cardPadding,
-    required this.cardGap,
     required this.dialogPadding,
-    required this.dialogActionsGap,
     required this.sheetPadding,
-    required this.toastMargin,
     required this.toastPaddingX,
     required this.toastPaddingY,
     required this.badgePaddingX,
     required this.badgePaddingY,
-    required this.chipPaddingX,
-    required this.chipPaddingY,
     required this.sectionGapSm,
     required this.sectionGapMd,
     required this.sectionGapLg,
@@ -64,23 +54,11 @@ class AppSpacingScheme {
   /// Medium spacing (16px)
   final double s16;
 
-  /// Medium-large spacing (20px)
-  final double s20;
-
   /// Large spacing (24px)
   final double s24;
 
   /// Extra large spacing (32px)
   final double s32;
-
-  /// 2x large spacing (40px)
-  final double s40;
-
-  /// 3x large spacing (48px)
-  final double s48;
-
-  /// 4x large spacing (64px)
-  final double s64;
 
   // --- Semantic / component-level spacing tokens ---
 
@@ -99,26 +77,14 @@ class AppSpacingScheme {
   /// Default input vertical padding.
   final double inputPaddingY;
 
-  /// Default vertical gap between input label and field.
-  final double inputLabelGap;
-
   /// Default card content padding (when the component supports it).
   final double cardPadding;
-
-  /// Default vertical gap used inside cards.
-  final double cardGap;
 
   /// Default dialog padding.
   final double dialogPadding;
 
-  /// Default gap between dialog action buttons.
-  final double dialogActionsGap;
-
   /// Default bottom sheet padding.
   final double sheetPadding;
-
-  /// Default toast/snackbar outer margin.
-  final double toastMargin;
 
   /// Default toast/snackbar horizontal padding.
   final double toastPaddingX;
@@ -131,12 +97,6 @@ class AppSpacingScheme {
 
   /// Default badge vertical padding.
   final double badgePaddingY;
-
-  /// Default chip horizontal padding.
-  final double chipPaddingX;
-
-  /// Default chip vertical padding.
-  final double chipPaddingY;
 
   /// Small section/layout gap.
   final double sectionGapSm;
@@ -162,32 +122,22 @@ class DefaultSpacingScheme extends AppSpacingScheme {
         s8: 8,
         s12: 12,
         s16: 16,
-        s20: 20,
         s24: 24,
         s32: 32,
-        s40: 40,
-        s48: 48,
-        s64: 64,
 
         // Semantic / component-level spacing tokens
-        buttonPaddingX: 24,
-        buttonPaddingY: 12,
+        buttonPaddingX: 16,
+        buttonPaddingY: 10,
         buttonIconGap: 8,
-        inputPaddingX: 16,
-        inputPaddingY: 12,
-        inputLabelGap: 6,
+        inputPaddingX: 12,
+        inputPaddingY: 10,
         cardPadding: 16,
-        cardGap: 8,
         dialogPadding: 24,
-        dialogActionsGap: 8,
         sheetPadding: 16,
-        toastMargin: 16,
         toastPaddingX: 16,
         toastPaddingY: 12,
         badgePaddingX: 6,
         badgePaddingY: 2,
-        chipPaddingX: 12,
-        chipPaddingY: 8,
         sectionGapSm: 8,
         sectionGapMd: 16,
         sectionGapLg: 24,

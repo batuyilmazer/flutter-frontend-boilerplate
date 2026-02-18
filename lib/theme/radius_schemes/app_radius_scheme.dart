@@ -3,15 +3,9 @@
 /// Provides consistent corner rounding values for buttons, cards, inputs, etc.
 class AppRadiusScheme {
   const AppRadiusScheme({
-    // Primitive radius tokens
-    required this.none,
-    required this.small,
-    required this.medium,
-    required this.large,
-    required this.xl,
-    required this.full,
-
     // Semantic / component-level radius tokens
+    required this.small,
+    required this.full,
     required this.button,
     required this.card,
     required this.input,
@@ -32,20 +26,8 @@ class AppRadiusScheme {
     required this.datePicker,
   });
 
-  /// No border radius (0px)
-  final double none;
-
   /// Small border radius (4px)
   final double small;
-
-  /// Medium border radius (8px)
-  final double medium;
-
-  /// Large border radius (16px)
-  final double large;
-
-  /// Extra-large border radius (24px)
-  final double xl;
 
   /// Full / pill / circle border radius (9999px)
   final double full;
@@ -113,20 +95,15 @@ class AppRadiusScheme {
 class DefaultRadiusScheme extends AppRadiusScheme {
   const DefaultRadiusScheme()
     : super(
-        // Primitive radius tokens
-        none: 0,
-        small: 4,
-        medium: 8,
-        large: 16,
-        xl: 24,
+        small: 6,
         full: 9999,
 
         // Semantic / component-level radius tokens
         button: 8,
         card: 8,
         input: 8,
-        dialog: 16,
-        sheet: 16,
+        dialog: 12,
+        sheet: 12,
         badge: 9999,
         alert: 8,
         chip: 8,
@@ -137,8 +114,8 @@ class DefaultRadiusScheme extends AppRadiusScheme {
         toggle: 8,
         pagination: 8,
         avatar: 8,
-        indicator: 4,
-        checkbox: 4,
-        datePicker: 16,
+        indicator: 6,
+        checkbox: 6,
+        datePicker: 12,
       );
 }

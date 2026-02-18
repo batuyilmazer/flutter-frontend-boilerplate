@@ -50,17 +50,17 @@ class DefaultTypographyScheme extends AppTypographyScheme {
         ),
         body: const TextStyle(
           fontWeight: FontWeight.normal,
-          fontSize: 16,
+          fontSize: 14,
           letterSpacing: 0,
         ),
         bodySmall: const TextStyle(
           fontWeight: FontWeight.normal,
-          fontSize: 14,
+          fontSize: 13,
           letterSpacing: 0,
         ),
         button: const TextStyle(
           fontWeight: FontWeight.w600,
-          fontSize: 15,
+          fontSize: 14,
           letterSpacing: 0.1,
         ),
         caption: const TextStyle(

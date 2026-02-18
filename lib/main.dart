@@ -40,7 +40,10 @@ class MyApp extends StatelessWidget {
       ],
       child: Consumer<ThemeNotifier>(
         builder: (context, themeNotifier, child) {
-          final router = AppRouter.createRouter(context);
+          final router = AppRouter.createRouter(
+            context,
+            mode: RoutingMode.shell,
+          );
           return MaterialApp.router(
             title: 'Flutter Frontend Boilerplate',
             theme: AppThemeData.light().toThemeData(),

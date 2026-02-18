@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../theme/extensions/theme_context_extensions.dart';
+import '../../theme/size_schemes/app_size_scheme.dart';
 
 /// Button variants for different use cases.
 enum AppButtonVariant { primary, secondary, outline, text }
@@ -16,6 +17,7 @@ class AppButton extends StatelessWidget {
     this.variant = AppButtonVariant.primary,
     this.isLoading = false,
     this.isFullWidth = false,
+    this.size = AppComponentSize.md,
     this.icon,
   });
 
@@ -24,6 +26,8 @@ class AppButton extends StatelessWidget {
   final AppButtonVariant variant;
   final bool isLoading;
   final bool isFullWidth;
+   /// Semantic size for the button (sm, md, lg).
+  final AppComponentSize size;
   final Widget? icon;
 
   @override
@@ -37,8 +41,51 @@ class AppButton extends StatelessWidget {
 
   Widget _buildButton(BuildContext context) {
     final colors = context.appColors;
-    final radius = context.appRadius;
     final spacing = context.appSpacing;
+    final sizes = context.appSizes;
+    final theme = Theme.of(context);
+
+    final buttonHeight = sizes.buttonHeight(size);
+
+    EdgeInsets primaryPadding() {
+      switch (size) {
+        case AppComponentSize.sm:
+          return EdgeInsets.symmetric(
+            horizontal: spacing.buttonPaddingX * 0.75,
+            vertical: spacing.buttonPaddingY * 0.75,
+          );
+        case AppComponentSize.lg:
+          return EdgeInsets.symmetric(
+            horizontal: spacing.buttonPaddingX * 1.25,
+            vertical: spacing.buttonPaddingY * 1.25,
+          );
+        case AppComponentSize.md:
+          return EdgeInsets.symmetric(
+            horizontal: spacing.buttonPaddingX,
+            vertical: spacing.buttonPaddingY,
+          );
+      }
+    }
+
+    EdgeInsets textPadding() {
+      switch (size) {
+        case AppComponentSize.sm:
+          return EdgeInsets.symmetric(
+            horizontal: spacing.s12,
+            vertical: spacing.s4,
+          );
+        case AppComponentSize.lg:
+          return EdgeInsets.symmetric(
+            horizontal: spacing.s16 * 1.25,
+            vertical: spacing.s8 * 1.25,
+          );
+        case AppComponentSize.md:
+          return EdgeInsets.symmetric(
+            horizontal: spacing.s16,
+            vertical: spacing.s8,
+          );
+      }
+    }
 
     if (isLoading) {
       return _buildLoadingButton(context);
@@ -48,64 +95,54 @@ class AppButton extends StatelessWidget {
       case AppButtonVariant.primary:
         return ElevatedButton(
           onPressed: onPressed,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: colors.primary,
-            foregroundColor: colors.onPrimary,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(radius.button),
+          style: theme.elevatedButtonTheme.style?.copyWith(
+            minimumSize: WidgetStateProperty.all(
+              Size(0, buttonHeight),
             ),
-            padding: EdgeInsets.symmetric(
-              horizontal: spacing.buttonPaddingX,
-              vertical: spacing.buttonPaddingY,
-            ),
+            padding: WidgetStateProperty.all(primaryPadding()),
           ),
           child: _buildContent(),
         );
       case AppButtonVariant.secondary:
         return ElevatedButton(
           onPressed: onPressed,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: colors.surface,
-            foregroundColor: colors.primary,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(radius.button),
-              side: BorderSide(color: colors.primary),
+          style: theme.elevatedButtonTheme.style?.copyWith(
+            backgroundColor: WidgetStatePropertyAll(colors.surfaceVariant),
+            foregroundColor: WidgetStatePropertyAll(colors.textPrimary),
+            side: WidgetStatePropertyAll(
+              BorderSide(color: colors.border),
             ),
-            padding: EdgeInsets.symmetric(
-              horizontal: spacing.buttonPaddingX,
-              vertical: spacing.buttonPaddingY,
+            minimumSize: WidgetStateProperty.all(
+              Size(0, buttonHeight),
             ),
+            padding: WidgetStateProperty.all(primaryPadding()),
           ),
           child: _buildContent(),
         );
       case AppButtonVariant.outline:
         return OutlinedButton(
           onPressed: onPressed,
-          style: OutlinedButton.styleFrom(
-            foregroundColor: colors.textPrimary,
-            side: BorderSide(color: colors.textSecondary),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(radius.button),
+          style: theme.outlinedButtonTheme.style?.copyWith(
+            foregroundColor: WidgetStatePropertyAll(colors.textPrimary),
+            side: WidgetStatePropertyAll(
+              BorderSide(color: colors.border),
             ),
-            padding: EdgeInsets.symmetric(
-              horizontal: spacing.buttonPaddingX,
-              vertical: spacing.buttonPaddingY,
+            minimumSize: WidgetStateProperty.all(
+              Size(0, buttonHeight),
             ),
+            padding: WidgetStateProperty.all(primaryPadding()),
           ),
           child: _buildContent(),
         );
       case AppButtonVariant.text:
         return TextButton(
           onPressed: onPressed,
-          style: TextButton.styleFrom(
-            foregroundColor: colors.primary,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(radius.button),
+          style: theme.textButtonTheme.style?.copyWith(
+            foregroundColor: WidgetStatePropertyAll(colors.primary),
+            minimumSize: WidgetStateProperty.all(
+              Size(0, buttonHeight),
             ),
-            padding: EdgeInsets.symmetric(
-              horizontal: spacing.s16,
-              vertical: spacing.s8,
-            ),
+            padding: WidgetStateProperty.all(textPadding()),
           ),
           child: _buildContent(),
         );
@@ -134,21 +171,28 @@ class AppButton extends StatelessWidget {
 
   Widget _buildLoadingButton(BuildContext context) {
     final colors = context.appColors;
-    final radius = context.appRadius;
     final spacing = context.appSpacing;
+    final sizes = context.appSizes;
+    final theme = Theme.of(context);
+
+    final buttonHeight = sizes.buttonHeight(size);
 
     return ElevatedButton(
       onPressed: null,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: variant == AppButtonVariant.primary
-            ? colors.primary
-            : colors.surface,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(radius.button),
+      style: theme.elevatedButtonTheme.style?.copyWith(
+        backgroundColor: WidgetStatePropertyAll(
+          variant == AppButtonVariant.primary
+              ? colors.primary
+              : colors.surface,
         ),
-        padding: EdgeInsets.symmetric(
-          horizontal: spacing.buttonPaddingX,
-          vertical: spacing.buttonPaddingY,
+        minimumSize: WidgetStateProperty.all(
+          Size(0, buttonHeight),
+        ),
+        padding: WidgetStateProperty.all(
+          EdgeInsets.symmetric(
+            horizontal: spacing.buttonPaddingX,
+            vertical: spacing.buttonPaddingY,
+          ),
         ),
       ),
       child: SizedBox(

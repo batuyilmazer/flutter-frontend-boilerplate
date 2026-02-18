@@ -97,6 +97,7 @@ class ThemeBuilder {
             horizontal: appTheme.spacing.buttonPaddingX,
             vertical: appTheme.spacing.buttonPaddingY,
           ),
+          elevation: 0,
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
@@ -122,13 +123,13 @@ class ThemeBuilder {
           borderRadius: BorderRadius.circular(appTheme.radius.card),
           side: BorderSide(color: appTheme.colors.border),
         ),
-        margin: EdgeInsets.all(appTheme.spacing.s8),
+        margin: EdgeInsets.zero,
       ),
 
       // Dialog theme
       dialogTheme: DialogThemeData(
         backgroundColor: appTheme.colors.surface,
-        elevation: 8,
+        elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(appTheme.radius.dialog),
         ),
@@ -143,7 +144,7 @@ class ThemeBuilder {
       // Bottom sheet theme
       bottomSheetTheme: BottomSheetThemeData(
         backgroundColor: appTheme.colors.surface,
-        elevation: 8,
+        elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
             top: Radius.circular(appTheme.radius.sheet),
@@ -271,7 +272,7 @@ class ThemeBuilder {
           borderRadius: BorderRadius.circular(appTheme.radius.toast),
         ),
         behavior: SnackBarBehavior.floating,
-        elevation: 4,
+        elevation: 0,
       ),
 
       // Drawer theme

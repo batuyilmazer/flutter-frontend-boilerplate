@@ -40,10 +40,11 @@ class AppDialog {
         return Dialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(radius.dialog),
+            side: BorderSide(color: colors.border),
           ),
           backgroundColor: colors.surface,
           child: Padding(
-            padding: EdgeInsets.all(spacing.s24),
+            padding: EdgeInsets.all(spacing.dialogPadding),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -113,6 +114,7 @@ class AppAlertDialog {
         return AlertDialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(radius.dialog),
+            side: BorderSide(color: colors.border),
           ),
           backgroundColor: colors.surface,
           title: Text(
